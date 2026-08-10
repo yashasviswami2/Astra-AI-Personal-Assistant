@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+logs/
+screenshots/
+dist/
+build/
+*.spec
+.venv/
+memory/
+startup_check.py

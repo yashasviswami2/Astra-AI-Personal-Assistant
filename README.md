@@ -1,4 +1,4 @@
-# 🤖 JARVIS — AI-Powered Personal Assistant
+# 🤖 JARVIS - AI-Powered Personal Assistant
 
 > **A desktop-based AI personal assistant built with Python, Google Gemini, voice interaction, system automation, web tools, memory, and productivity features.**
 

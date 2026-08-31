@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>JARVIS AI Assistant</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+
+    <div class="brand">
+
+        <div class="orb">J</div>
+
+        <div>
+            <b>JARVIS</b>
+            <small>AI VOICE ASSISTANT</small>
+        </div>
+
+    </div>
+
+    <span class="online">● SYSTEM ONLINE</span>
+
+</header>
+
+<div class="layout">
+
+<!-- ===============================
+     SIDEBAR
+     =============================== -->
+
+<aside>
+
+    <button id="voiceBtn" class="active">
+        ◉ &nbsp; Voice Assistant
+    </button>
+
+    <button id="aiChatBtn">
+        ✦ &nbsp; AI Chat
+    </button>
+
+    <button id="commandsBtn">
+        ⌘ &nbsp; Commands
+    </button>
+
+    <button id="aboutBtn">
+        ⓘ &nbsp; About
+    </button>
+
+    <div class="status">
+
+        <small>SYSTEM STATUS</small>
+
+        <strong>ONLINE</strong>
+
+        <span>Ready for demonstration</span>
+
+    </div>
+
+</aside>
+
+<!-- ===============================
+     MAIN CONTENT
+     =============================== -->
+
+<main>
+
+<!-- ===============================
+     VOICE ASSISTANT VIEW
+     =============================== -->
+
+<div id="voicePanel">
+
+    <p class="eyebrow">
+        INTELLIGENT COMPUTER INTERACTION
+    </p>
+
+    <h1>
+        JARVIS Voice Assistant
+    </h1>
+
+    <p class="sub">
+        Speak naturally. JARVIS listens, understands and responds.
+    </p>
+
+    <div class="assistant-orb" id="orb">
+
+        <div class="mic">
+            🎙
+        </div>
+
+    </div>
+
+    <div class="state" id="state">
+        READY
+    </div>
+
+    <div class="transcript" id="transcript">
+        Press the microphone and say a command.
+    </div>
+
+    <div class="actions">
+
+        <button id="micBtn">
+            🎙 Start Listening
+        </button>
+
+        <button id="speakBtn">
+            🔊 Speak Response
+        </button>
+
+    </div>
+
+    <div class="quick">
+
+        <button data-q="What is Artificial Intelligence?">
+            AI Question
+        </button>
+
+        <button data-q="What is Python?">
+            Python
+        </button>
+
+        <button data-q="Search for Generative AI">
+            Web Search
+        </button>
+
+        <button data-q="What time is it?">
+            Time
+        </button>
+
+    </div>
+
+    <section>
+
+        <div class="card">
+
+            <h3>
+                JARVIS Response
+            </h3>
+
+            <p id="response">
+                Hello! I am JARVIS. Ask me something or use a demo command.
+            </p>
+
+        </div>
+
+        <div class="card activity">
+
+            <h3>
+                Live Activity
+            </h3>
+
+            <div id="log">
+
+                <p>
+                    System — JARVIS initialized successfully.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<!-- ===============================
+     AI CHAT VIEW
+     =============================== -->
+
+<div id="aiChatPanel">
+
+    <p class="eyebrow">
+        INTELLIGENT CONVERSATION
+    </p>
+
+    <h1>
+        JARVIS AI Chat
+    </h1>
+
+    <p class="sub">
+        Ask JARVIS anything using natural language.
+    </p>
+
+    <div class="chat-box" id="chatBox">
+
+        <div class="chat-message jarvis-message">
+
+            <strong>JARVIS</strong>
+
+            <p>
+                Hello! I am JARVIS. How can I help you?
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- CHAT INPUT -->
+
+    <div class="chat-input-area">
+
+        <!-- NEW VOICE INPUT BUTTON -->
+
+        <button
+            id="chatMicBtn"
+            title="Speak to JARVIS"
+        >
+            🎙
+        </button>
+
+        <input
+            type="text"
+            id="chatInput"
+            placeholder="Ask JARVIS anything..."
+            autocomplete="off"
+        >
+
+        <button id="chatSendBtn">
+            Send
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ===============================
+     COMMAND CENTER VIEW
+     =============================== -->
+
+<div id="commandCenter" class="command-center">
+
+    <h1>
+        JARVIS COMMAND CENTER
+    </h1>
+
+    <p class="command-subtitle">
+        Select a command to execute it through the JARVIS backend.
+    </p>
+
+    <div class="command-group">
+
+        <h3>🕐 SYSTEM</h3>
+
+        <button
+            class="command-action"
+            data-command="What time is it?"
+        >
+            🕐 What time is it?
+        </button>
+
+
+        <button
+            class="command-action"
+            data-command="What is today's date?"
+        >
+            📅 What is today's date?
+        </button>
+
+    </div>
+
+    <div class="command-group">
+
+        <h3>💻 APPLICATIONS</h3>
+
+        <button
+            class="command-action"
+            data-command="Open Google Chrome"
+        >
+            🌐 Open Google Chrome
+        </button>
+
+        <button
+            class="command-action"
+            data-command="Open Calculator"
+        >
+            🧮 Open Calculator
+        </button>
+
+        <button
+            class="command-action"
+            data-command="Open VS Code"
+        >
+            💻 Open VS Code
+        </button>
+
+    </div>
+
+    <div class="command-group">
+
+        <h3>🌐 WEB</h3>
+
+        <button
+            class="command-action"
+            data-command="Search the web for Generative AI"
+        >
+            🔎 Search Generative AI
+        </button>
+
+        <button
+            class="command-action"
+            data-command="Open Google"
+        >
+            🌍 Open Google
+        </button>
+
+    </div>
+
+
+    <div class="command-group">
+
+        <h3>🛠️ JARVIS TOOLS</h3>
+
+        <button
+            class="command-action"
+            data-command="Take a screenshot"
+        >
+            📸 Take Screenshot
+        </button>
+
+        <button
+            class="command-action"
+            data-command="List files in my desktop"
+        >
+            📁 List Desktop Files
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ===============================
+     ABOUT VIEW
+     =============================== -->
+
+<div id="aboutPanel">
+
+    <p class="eyebrow">
+        ABOUT THE PROJECT
+    </p>
+
+    <h1>
+        JARVIS AI Assistant
+    </h1>
+
+    <p class="sub">
+        An AI-powered voice and computer interaction assistant.
+    </p>
+
+    <div class="card about-card">
+
+        <h3>
+            About JARVIS
+        </h3>
+
+        <p>
+            JARVIS is an intelligent AI assistant developed during
+            the internship to demonstrate natural-language interaction,
+            artificial intelligence, system automation,
+            web search, application launching and
+            voice-based communication.
+        </p>
+
+        <p>
+            The system uses a Python Flask backend, Google Gemini API,
+            JavaScript, HTML and CSS to provide an interactive
+            AI-powered user experience.
+        </p>
+
+    </div>
+
+</div>
+
+</main>
+
+</div>
+
+<footer>
+
+    JARVIS AI Assistant |
+    Built with HTML, CSS & JavaScript |
+    Internship Demonstration
+
+</footer>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>

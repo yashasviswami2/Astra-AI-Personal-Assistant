@@ -22,7 +22,6 @@ class JarvisAgent:
 
         self._configure_api()
 
-
     # =========================================================
     # GEMINI CONFIGURATION
     # =========================================================
@@ -42,7 +41,6 @@ class JarvisAgent:
 
             return
 
-
         try:
 
             self.client = genai.Client(
@@ -56,7 +54,6 @@ class JarvisAgent:
                 f"using model: {settings.GEMINI_MODEL}"
             )
 
-
         except Exception as e:
 
             logger.error(
@@ -64,7 +61,6 @@ class JarvisAgent:
             )
 
             self.api_configured = False
-
 
     # =========================================================
     # GEMINI CONFIGURATION
@@ -293,6 +289,7 @@ class JarvisAgent:
                     role="user",
 
                     parts=[
+
                         types.Part.from_text(
                             text=query
                         )
@@ -539,58 +536,14 @@ class JarvisAgent:
 
             try:
 
-                memory_contents = list(
-                    contents
+                memory.save_conversation(
+                    query,
+                    final_text
                 )
-
-
-                # Save current user query
-
-                memory_contents.append(
-
-                    types.Content(
-
-                        role="user",
-
-                        parts=[
-
-                            types.Part.from_text(
-                                text=query
-                            )
-
-                        ]
-                    )
-                )
-
-
-                # Save JARVIS response
-
-                memory_contents.append(
-
-                    types.Content(
-
-                        role="model",
-
-                        parts=[
-
-                            types.Part.from_text(
-                                text=final_text
-                            )
-
-                        ]
-                    )
-                )
-
-
-                memory.save_from_chat_history(
-                    memory_contents
-                )
-
 
                 logger.info(
                     "Conversation memory saved successfully."
                 )
-
 
             except Exception as memory_error:
 

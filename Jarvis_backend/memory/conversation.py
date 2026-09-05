@@ -9,7 +9,12 @@ class ConversationMemory:
         self.memory_file = self.memory_dir / "conversation.json"
 
     def get_history(self):
-        """Load previous conversation history."""
+        """
+        Load previous conversation history.
+
+        Returns:
+            list: Stored conversation messages.
+        """
 
         if not self.memory_file.exists():
             return []
@@ -20,54 +25,45 @@ class ConversationMemory:
                 "r",
                 encoding="utf-8"
             ) as f:
-                return json.load(f)
+
+                data = json.load(f)
+
+                if isinstance(data, list):
+                    return data
+
+                return []
 
         except (json.JSONDecodeError, OSError):
             return []
 
-    def save_from_chat_history(self, chat_history):
-        """Save Gemini conversation history locally."""
+    def save_message(self, role, text):
+        """
+        Save a single conversation message.
+
+        Args:
+            role: 'user' or 'model'
+            text: Message text.
+        """
+
+        if not text:
+            return
 
         try:
+            history = self.get_history()
 
-            history = []
+            history.append(
+                {
+                    "role": role,
+                    "parts": [
+                        {
+                            "text": str(text)
+                        }
+                    ]
+                }
+            )
 
-            for message in chat_history:
-
-                role = getattr(
-                    message,
-                    "role",
-                    None
-                )
-
-                parts = getattr(
-                    message,
-                    "parts",
-                    []
-                )
-
-                converted_parts = []
-
-                for part in parts:
-
-                    text = getattr(
-                        part,
-                        "text",
-                        None
-                    )
-
-                    if text:
-
-                        converted_parts.append({
-                            "text": text
-                        })
-
-                if role and converted_parts:
-
-                    history.append({
-                        "role": role,
-                        "parts": converted_parts
-                    })
+            # Keep the most recent 50 messages.
+            history = history[-50:]
 
             with open(
                 self.memory_file,
@@ -86,10 +82,41 @@ class ConversationMemory:
             # Memory should never crash JARVIS.
             pass
 
-    def clear_history(self):
-        """Clear all saved conversation history."""
+    def save_conversation(self, user_text, assistant_text):
+        """
+        Save both sides of a conversation.
+        """
 
         try:
+
+            history = self.get_history()
+
+            if user_text:
+                history.append(
+                    {
+                        "role": "user",
+                        "parts": [
+                            {
+                                "text": str(user_text)
+                            }
+                        ]
+                    }
+                )
+
+            if assistant_text:
+                history.append(
+                    {
+                        "role": "model",
+                        "parts": [
+                            {
+                                "text": str(assistant_text)
+                            }
+                        ]
+                    }
+                )
+
+            # Prevent unlimited memory growth.
+            history = history[-50:]
 
             with open(
                 self.memory_file,
@@ -98,16 +125,31 @@ class ConversationMemory:
             ) as f:
 
                 json.dump(
-                    [],
+                    history,
                     f,
-                    indent=2
+                    indent=2,
+                    ensure_ascii=False
                 )
 
-            return True
-
         except Exception:
+            # Memory must never crash JARVIS.
+            pass
 
-            return False
+    def clear_memory(self):
+        """
+        Delete stored conversation history.
+        """
+
+        try:
+
+            if self.memory_file.exists():
+                self.memory_file.unlink()
+
+            return "Conversation memory cleared successfully."
+
+        except Exception as e:
+
+            return f"Failed to clear conversation memory: {str(e)}"
 
 
 memory = ConversationMemory()

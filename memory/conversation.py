@@ -52,7 +52,7 @@ class ConversationMemory:
                 )
 
         except Exception:
-            # Memory should never crash JARVIS.
+            # Memory should never crash ASTRA.
             pass
 
 

@@ -216,8 +216,8 @@ included in the GitHub repository.
 ### 1. Clone the repository
 
 ```bash
-git clone -b astra-v1 https://github.com/yashasviswami2/Jarvis-AI-Personal-Assistant.git
-cd Jarvis-AI-Personal-Assistant
+git clone -b astra-v1 https://github.com/yashasviswami2/Astra-AI-Personal-Assistant.git
+cd Astra-AI-Personal-Assistant
 ```
 
 ### 2. Create a virtual environment

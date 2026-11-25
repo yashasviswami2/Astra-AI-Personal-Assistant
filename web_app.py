@@ -25,7 +25,7 @@ app = Flask(
     static_url_path="/static"
 )
 
-jarvis = ASTRAAgent()
+astra = ASTRAAgent()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ def health():
 
     return jsonify({
         "status": "online",
-        "gemini_configured": jarvis.api_configured,
+        "gemini_configured": astra.api_configured,
         "voice_enabled": True
     })
 
@@ -71,12 +71,12 @@ def chat():
                 "error": "Please enter a message."
             }), 400
 
-        if not jarvis.api_configured:
+        if not astra.api_configured:
             return jsonify({
                 "error": "Gemini API is not configured. Check your .env file."
             }), 503
 
-        response = jarvis.execute_query(message)
+        response = astra.execute_query(message)
 
         return jsonify({
             "response": response

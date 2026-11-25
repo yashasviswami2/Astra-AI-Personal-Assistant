@@ -1,14 +1,14 @@
 @echo off
 SETLOCAL EnableDelayedExpansion
-title Jarvis AI Assistant - Console Mode
+title ASTRA AI Assistant - Console Mode
 cd /d "%~dp0"
 
 echo.
 echo  +============================================================+
-echo    JARVIS AI ASSISTANT - CONSOLE DEBUG MODE
+echo    ASTRA AI ASSISTANT - CONSOLE DEBUG MODE
 echo  +============================================================+
 echo    Logs and errors are shown below.
-echo    Keep this window open while Jarvis is running.
+echo    Keep this window open while ASTRA is running.
 echo  +============================================================+
 echo.
 
@@ -22,7 +22,7 @@ if exist ".venv\Scripts\python.exe" (
 )
 
 :: ── Fallback: find clean Python (skip Anaconda) ─────────────────────────────
-echo [WARN] .venv not found. Run setup_jarvis.bat first for best results.
+echo [WARN] .venv not found. Run setup_ASTRA.bat first for best results.
 echo        Falling back to system Python...
 echo.
 
@@ -43,14 +43,14 @@ for %%P in (
 
 echo [ERROR] No working Python found and .venv is missing.
 echo.
-echo  Please run setup_jarvis.bat first!
+echo  Please run setup_ASTRA.bat first!
 echo.
 pause
 exit /b 1
 
 :run
 echo  Python: !PYTHON_EXE!
-echo  Starting Jarvis...
+echo  Starting ASTRA...
 echo  ------------------------------------------------------------
 echo.
 
@@ -58,13 +58,13 @@ echo.
 
 echo.
 echo  ------------------------------------------------------------
-echo  Jarvis has stopped.
+echo  ASTRA has stopped.
 echo  ------------------------------------------------------------
 echo.
 echo  If you see an error above:
-echo    1. Run setup_jarvis.bat to reinstall dependencies
+echo    1. Run setup_ASTRA.bat to reinstall dependencies
 echo    2. Make sure .env has a valid GEMINI_API_KEY
-echo    3. Check logs\jarvis.log for full details
+echo    3. Check logs\ASTRA.log for full details
 echo    4. Run as Administrator for hotkey support
 echo.
 pause

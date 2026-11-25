@@ -1,8 +1,8 @@
 """
 utils/logger.py
 ===============
-Centralised logger for all Jarvis modules.
-Writes to both console (INFO+) and logs/jarvis.log (DEBUG+).
+Centralised logger for all ASTRA modules.
+Writes to both console (INFO+) and logs/ASTRA.log (DEBUG+).
 """
 
 import logging
@@ -22,14 +22,14 @@ if sys.platform == "win32":
 LOG_DIR = Path(__file__).resolve().parent.parent / "logs"
 LOG_DIR.mkdir(exist_ok=True, parents=True)
 
-LOG_FILE = LOG_DIR / "jarvis.log"
+LOG_FILE = LOG_DIR / "ASTRA.log"
 
 CONSOLE_FORMAT = "%(asctime)s  %(levelname)-8s  %(message)s"
 FILE_FORMAT    = "%(asctime)s  %(levelname)-8s  %(name)s — %(filename)s:%(lineno)d — %(message)s"
 DATE_FORMAT    = "%H:%M:%S"
 
 def _setup_logger() -> logging.Logger:
-    logger = logging.getLogger("JarvisAssistant")
+    logger = logging.getLogger("ASTRAAssistant")
 
     # Prevent duplicate handlers if module is reloaded
     if logger.handlers:
@@ -59,5 +59,5 @@ _logger = _setup_logger()
 
 
 def get_logger() -> logging.Logger:
-    """Return the shared Jarvis logger instance."""
+    """Return the shared ASTRA logger instance."""
     return _logger

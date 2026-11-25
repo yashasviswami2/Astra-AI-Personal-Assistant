@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 print("=" * 55)
-print("  JARVIS — System Tray Icon Test")
+print("  ASTRA — System Tray Icon Test")
 print("=" * 55)
 print()
 
@@ -78,11 +78,11 @@ def auto_close():
 try:
     img = make_icon((46, 204, 113, 255))  # bright green
     icon = pystray.Icon(
-        name="JarvisTest",
+        name="ASTRATest",
         icon=img,
-        title="Jarvis Test Icon ✓ — Right-click → Exit Test",
+        title="ASTRA Test Icon ✓ — Right-click → Exit Test",
         menu=pystray.Menu(
-            pystray.MenuItem("✅  Jarvis Tray Test — WORKING!", lambda *_: None, enabled=False),
+            pystray.MenuItem("✅  ASTRA Tray Test — WORKING!", lambda *_: None, enabled=False),
             pystray.Menu.SEPARATOR,
             pystray.MenuItem("❌  Exit Test", do_exit),
         )

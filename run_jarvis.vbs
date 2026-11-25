@@ -1,4 +1,4 @@
-' run_jarvis.vbs
+' run_ASTRA.vbs
 ' Silent launcher with NO console window.
 ' Uses .venv if available, otherwise falls back to clean Python install.
 

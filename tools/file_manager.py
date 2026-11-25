@@ -26,8 +26,8 @@ def request_user_confirmation(action: str) -> bool:
         # IDYES = 6
         result = ctypes.windll.user32.MessageBoxW(
             0,
-            f"Jarvis is requesting permission to:\n\n--> {action}\n\nDo you want to allow this action?",
-            "Jarvis - Security Confirmation",
+            f"ASTRA is requesting permission to:\n\n--> {action}\n\nDo you want to allow this action?",
+            "ASTRA - Security Confirmation",
             4 | 32 | 4000
         )
         approved = (result == 6)
@@ -39,8 +39,8 @@ def request_user_confirmation(action: str) -> bool:
         try:
             import pyautogui
             res = pyautogui.confirm(
-                text=f"Allow Jarvis to:\n{action}?",
-                title="Jarvis Security Check",
+                text=f"Allow ASTRA to:\n{action}?",
+                title="ASTRA Security Check",
                 buttons=["Yes", "No"]
             )
             return res == "Yes"

@@ -1,5 +1,5 @@
 """
-Jarvis Windows AI Assistant — Main Entry Point
+ASTRA Windows AI Assistant — Main Entry Point
 =============================================
 Handles step-by-step initialization with detailed console/file logging.
 Every phase prints its status so silent failures are eliminated.
@@ -35,8 +35,8 @@ if "anaconda" in _exe or "conda" in _exe:
     print("  FIX — Use ONE of these options:")
     print()
     print("  Option A (Recommended):")
-    print("    Double-click  setup_jarvis.bat")
-    print("    Then double-click  run_jarvis_console.bat")
+    print("    Double-click  setup_ASTRA.bat")
+    print("    Then double-click  run_ASTRA_console.bat")
     print()
     print("  Option B (from terminal):")
     print(r"    .venv\Scripts\python.exe main.py")
@@ -58,7 +58,7 @@ if "anaconda" in _exe or "conda" in _exe:
 # ──────────────────────────────────────────────
 LOG_DIR = PROJECT_ROOT / "logs"
 LOG_DIR.mkdir(exist_ok=True, parents=True)
-LOG_FILE = LOG_DIR / "jarvis.log"
+LOG_FILE = LOG_DIR / "ASTRA.log"
 
 # Configure the root logger so every module shares it
 logging.basicConfig(
@@ -70,11 +70,11 @@ logging.basicConfig(
         logging.FileHandler(LOG_FILE, encoding="utf-8")  # file
     ]
 )
-logger = logging.getLogger("Jarvis.Main")
+logger = logging.getLogger("ASTRA.Main")
 
 BANNER = """
 +==================================================+
-|        JARVIS WINDOWS AI ASSISTANT v2.0          |
+|        ASTRA WINDOWS AI ASSISTANT v2.0          |
 |        Powered by Google Gemini                  |
 +==================================================+
 """
@@ -142,7 +142,7 @@ def load_environment() -> bool:
         try:
             env_file.write_text(
                 "# ========================================\n"
-                "# Jarvis AI Assistant — Environment Config\n"
+                "# ASTRA AI Assistant — Environment Config\n"
                 "# ========================================\n\n"
                 "# Get your key at https://aistudio.google.com/\n"
                 "GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE\n\n"
@@ -302,18 +302,18 @@ def main():
 
     # ── Launch tray application
     step(7, "Starting System Tray Application")
-    logger.info("  Launching JarvisTrayApp — look for the icon near WiFi/battery icons.")
+    logger.info("  Launching ASTRATrayApp — look for the icon near WiFi/battery icons.")
     logger.info("  NOTE: Windows may hide new icons in the ^ hidden tray. Drag it to the taskbar!")
 
     try:
-        from tray_app import JarvisTrayApp
-        app = JarvisTrayApp()
+        from tray_app import ASTRATrayApp
+        app = ASTRATrayApp()
         app.run()
     except KeyboardInterrupt:
         logger.info("Keyboard interrupt received. Shutting down...")
     except Exception as e:
         logger.critical(f"Fatal error in tray application: {e}", exc_info=True)
-        input("\nFatal error — check logs/jarvis.log for details.\nPress ENTER to exit...")
+        input("\nFatal error — check logs/ASTRA.log for details.\nPress ENTER to exit...")
         sys.exit(1)
 
 

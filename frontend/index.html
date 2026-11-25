@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ASTRA | Your Personal AI Companion</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">A</div>
+
+            <div>
+                <h2>ASTRA</h2>
+                <span>AI ASSISTANT</span>
+            </div>
+        </div>
+
+        <div class="menu-label">MENU</div>
+
+        <nav>
+            <button class="nav-btn active" data-page="voice">
+                🎙️ Voice Assistant
+            </button>
+
+            <button class="nav-btn" data-page="chat">
+                💬 AI Chat
+            </button>
+
+            <button class="nav-btn" data-page="commands">
+                ⚡ Commands
+            </button>
+
+            <button class="nav-btn" data-page="about">
+                ℹ️ About
+            </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="status-indicator"></div>
+
+            <div>
+                <strong>System Online</strong>
+                <small>Gemini AI Connected</small>
+            </div>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div>
+                <h1 id="page-title">Voice Assistant</h1>
+                <p>Your personal AI-powered desktop assistant</p>
+            </div>
+
+            <div class="top-status">
+                <span class="online-dot"></span>
+                ONLINE
+            </div>
+
+        </header>
+
+
+        <!-- VOICE PAGE -->
+        <section class="page active" id="voice">
+
+            <div class="welcome">
+
+                <div class="orb">A</div>
+
+                <h2>Hello, I'm ASTRA.</h2>
+
+                <p>Your intelligent personal assistant is ready.</p>
+
+                <div class="voice-status">
+                    <span class="online-dot"></span>
+                    Ready to assist you
+                </div>
+
+            </div>
+
+            <div class="info-card">
+
+                <h3>Voice Assistant</h3>
+
+                <p>
+                    Interact with ASTRA using your voice through
+                    the desktop assistant.
+                </p>
+
+                <p>
+                    Use <strong>Ctrl + Alt + A</strong> to activate
+                    voice listening.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- CHAT PAGE -->
+        <section class="page chat-page" id="chat">
+
+            <div class="chat-welcome">
+
+                <h2>AI Chat</h2>
+
+                <p>
+                    Ask ASTRA anything. Powered by Google Gemini.
+                </p>
+
+            </div>
+
+
+            <!-- CHAT MESSAGES -->
+            <div class="chat-messages" id="chat-messages">
+
+                <div class="message bot">
+
+                    <div class="avatar">A</div>
+
+                    <div class="message-content">
+                        Hello! I'm ASTRA. How can I help you today?
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CHAT INPUT -->
+            <form id="chat-form" class="chat-input-area">
+
+                <!-- MICROPHONE BUTTON -->
+                <button
+                    type="button"
+                    id="mic-btn"
+                    title="Speak to ASTRA"
+                    aria-label="Start voice input"
+                >
+                    🎙️
+                </button>
+
+                <!-- TEXT INPUT -->
+                <input
+                    type="text"
+                    id="user-input"
+                    placeholder="Message ASTRA..."
+                    autocomplete="off"
+                    required
+                >
+
+                <!-- SEND BUTTON -->
+                <button type="submit" id="send-btn" title="Send message">
+                    ➤
+                </button>
+
+            </form>
+
+
+            <p class="input-hint">
+                ASTRA can make mistakes. Verify important information.
+            </p>
+
+        </section>
+
+
+        <!-- COMMANDS PAGE -->
+        <section class="page" id="commands">
+
+            <h2>Available Commands</h2>
+
+            <div class="info-card">
+
+                <p>🚀 Open Chrome</p>
+                <p>▶️ Open YouTube</p>
+                <p>🔍 Search the web</p>
+                <p>📸 Take a screenshot</p>
+                <p>🕒 Get current time</p>
+                <p>📄 Summarize a PDF</p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ABOUT PAGE -->
+        <section class="page" id="about">
+
+            <h2>About ASTRA</h2>
+
+            <div class="info-card">
+
+                <h3>Your Personal AI Companion</h3>
+
+                <p>
+                    ASTRA is an intelligent desktop AI assistant
+                    developed using Python and Google Gemini.
+                </p>
+
+                <p><strong>Backend:</strong> Python + Flask</p>
+
+                <p><strong>AI Model:</strong> Google Gemini</p>
+
+                <p><strong>Interface:</strong> HTML, CSS and JavaScript</p>
+
+                <p><strong>Speech Recognition:</strong> Python Speech Recognition</p>
+
+                <p><strong>Text to Speech:</strong> pyttsx3</p>
+
+                <p><strong>AI Integration:</strong> Gemini API</p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
+

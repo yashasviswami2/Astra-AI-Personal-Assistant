@@ -35,7 +35,7 @@ for /f "delims=" %%P in ('where pythonw.exe 2^>nul') do (
     goto :launch
 )
 
-echo Python not found. Please run setup_jarvis.bat first.
+echo Python not found. Please run setup_ASTRA.bat first.
 pause
 exit /b 1
 

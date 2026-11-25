@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 print("=" * 55)
-print("  JARVIS — Microphone Test")
+print("  ASTRA — Microphone Test")
 print("=" * 55)
 print()
 

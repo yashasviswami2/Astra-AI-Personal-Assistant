@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 print("=" * 55)
-print("  JARVIS — Hotkey Registration Test")
+print("  ASTRA — Hotkey Registration Test")
 print("=" * 55)
 print()
 
@@ -53,7 +53,7 @@ try:
     if not pressed[0]:
         print("[INFO] Hotkey was not pressed within 10 seconds.")
         print("  The hotkey registration itself succeeded — the library is working.")
-        print("  Try pressing Ctrl+Alt+A next time Jarvis is running.")
+        print("  Try pressing Ctrl+Alt+A next time ASTRA is running.")
     else:
         print()
         print("✅ Hotkeys are fully working on this system!")
@@ -66,7 +66,7 @@ except Exception as e:
     print("  2. Check if another app is using Ctrl+Alt+A")
     print("  3. Some antivirus software blocks keyboard hooks — add Python as exception")
     print()
-    print("  Jarvis will still work via the tray right-click menu even without hotkeys.")
+    print("  ASTRA will still work via the tray right-click menu even without hotkeys.")
     sys.exit(1)
 
 print()

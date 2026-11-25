@@ -1,79 +1,148 @@
 """
 test_gemini.py — Standalone Gemini API Test
 ============================================
-Run with:  python test_gemini.py
+Run with:
+    python test_gemini.py
 """
 
 import os
 import sys
 from pathlib import Path
 
-# Ensure project root is on path
+# ─────────────────────────────────────────────────────────────
+# 1. Project setup
+# ─────────────────────────────────────────────────────────────
+
 ROOT = Path(__file__).resolve().parent
 os.chdir(ROOT)
-sys.path.insert(0, str(ROOT))
+
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 print("=" * 55)
-print("  JARVIS — Gemini API Test")
+print("  ASTRA — Gemini API Test")
 print("=" * 55)
 print()
 
-# ── 1. Load .env ──────────────────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────
+# 2. Load .env
+# ─────────────────────────────────────────────────────────────
+
 try:
     from dotenv import load_dotenv
-    load_dotenv(dotenv_path=ROOT / ".env")
+
+    load_dotenv(ROOT / ".env")
+
     print("[OK] python-dotenv loaded")
+
 except ImportError:
-    print("[FAIL] python-dotenv not installed.  Run: pip install python-dotenv")
+    print("[FAIL] python-dotenv is not installed.")
+    print("Run:")
+    print("    python -m pip install python-dotenv")
     sys.exit(1)
 
-# ── 2. Check API key ──────────────────────────────────────────
-api_key = os.getenv("GEMINI_API_KEY", "")
+
+# ─────────────────────────────────────────────────────────────
+# 3. Read API key
+# ─────────────────────────────────────────────────────────────
+
+api_key = os.getenv("GEMINI_API_KEY", "").strip()
+
 if not api_key or api_key == "YOUR_GEMINI_API_KEY_HERE":
-    print("[FAIL] GEMINI_API_KEY not set in .env")
-    print("  → Open .env and paste your real API key.")
+    print("[FAIL] GEMINI_API_KEY is not configured.")
+    print()
+    print("Open .env and add:")
+    print("    GEMINI_API_KEY=YOUR_REAL_KEY")
     sys.exit(1)
 
 masked = api_key[:6] + "..." + api_key[-4:]
+
 print(f"[OK] GEMINI_API_KEY found: {masked}")
 
-# ── 3. Import google-generativeai ─────────────────────────────
+
+# ─────────────────────────────────────────────────────────────
+# 4. Read model from .env
+# ─────────────────────────────────────────────────────────────
+
+model_name = os.getenv(
+    "GEMINI_MODEL",
+    "gemini-3.6-flash"
+).strip()
+
+print(f"[OK] Model configured: {model_name}")
+
+
+# ─────────────────────────────────────────────────────────────
+# 5. Import new Google GenAI SDK
+# ─────────────────────────────────────────────────────────────
+
 try:
-    import google.generativeai as genai
-    print("[OK] google-generativeai imported")
+    from google import genai
+
+    print("[OK] google-genai imported")
+
 except ImportError:
-    print("[FAIL] google-generativeai not installed.  Run: pip install google-generativeai")
+    print()
+    print("[FAIL] google-genai is not installed.")
+    print()
+    print("Install it with:")
+    print("    python -m pip install google-genai")
     sys.exit(1)
 
-# ── 4. Configure and test ─────────────────────────────────────
-model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-print(f"\nConnecting to model: {model_name}")
+
+# ─────────────────────────────────────────────────────────────
+# 6. Create Gemini client
+# ─────────────────────────────────────────────────────────────
+
+print()
+print(f"Connecting to model: {model_name}")
 print("Sending test prompt: 'Say OK in exactly one word'...")
 print()
 
 try:
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel(model_name)
-    response = model.generate_content(
-        "Say OK in exactly one word.",
-        generation_config={"max_output_tokens": 10}
+
+    client = genai.Client(api_key=api_key)
+
+    response = client.models.generate_content(
+        model=model_name,
+        contents="Say OK in exactly one word."
     )
+
     reply = response.text.strip()
+
     print(f"[SUCCESS] Gemini replied: '{reply}'")
     print()
     print("✅ Gemini API is working correctly!")
+    print()
+    print("ASTRA's Gemini connection is ready.")
+
 except Exception as e:
-    err = str(e)
-    print(f"[FAIL] Gemini call failed: {e}")
-    if "API_KEY_INVALID" in err or "400" in err:
-        print("  → Your API key is invalid. Get a new one at https://aistudio.google.com/")
-    elif "quota" in err.lower():
-        print("  → API quota exceeded. Check usage at https://aistudio.google.com/")
-    elif "ConnectionError" in err or "Failed to connect" in err or "Name or service" in err:
-        print("  → No internet. Check your connection.")
-    elif "404" in err:
-        print(f"  → Model '{model_name}' not found. Try 'gemini-2.5-flash' in .env")
+
+    error = str(e)
+
+    print("[FAIL] Gemini API call failed.")
+    print()
+    print(f"Error: {error}")
+    print()
+
+    if "API key" in error or "API_KEY" in error or "401" in error:
+        print("→ Check that your Gemini API key is valid.")
+
+    elif "403" in error:
+        print("→ Your API key/project may not have access to this API or model.")
+
+    elif "404" in error:
+        print(f"→ The model '{model_name}' is not available.")
+        print("→ Check the current Gemini model name available to your API key.")
+
+    elif "429" in error:
+        print("→ Rate limit or quota reached.")
+
+    elif "connection" in error.lower():
+        print("→ Check your internet connection.")
+
     sys.exit(1)
 
-print()
-input("Press ENTER to exit...")
+
+print("=" * 55)

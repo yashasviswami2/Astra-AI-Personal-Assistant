@@ -1,11 +1,11 @@
 @echo off
 SETLOCAL EnableDelayedExpansion
-title Jarvis Setup
+title ASTRA Setup
 cd /d "%~dp0"
 
 echo.
 echo  +============================================================+
-echo    JARVIS AI ASSISTANT - ONE-TIME SETUP
+echo    ASTRA AI ASSISTANT - ONE-TIME SETUP
 echo  +============================================================+
 echo.
 
@@ -148,7 +148,7 @@ if not exist ".env" (
     echo [WARN] .env file not found. Creating template...
     (
         echo # =========================================
-        echo # Jarvis AI Assistant - Environment Config
+        echo # ASTRA AI Assistant - Environment Config
         echo # =========================================
         echo.
         echo # Get your free API key at: https://aistudio.google.com/
@@ -219,10 +219,10 @@ echo  Next steps:
 echo    1. If you see a .env warning above, open .env and add your API key.
 echo       Get a free key at: https://aistudio.google.com/
 echo.
-echo    2. Double-click  run_jarvis_console.bat  to start Jarvis with logs.
-echo    3. Double-click  run_jarvis_silent.bat   to start silently.
+echo    2. Double-click  run_ASTRA_console.bat  to start ASTRA with logs.
+echo    3. Double-click  run_ASTRA_silent.bat   to start silently.
 echo.
-echo  All logs are saved in: logs\jarvis.log
+echo  All logs are saved in: logs\ASTRA.log
 echo.
 pause
 ENDLOCAL

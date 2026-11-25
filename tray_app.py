@@ -1,5 +1,5 @@
 """
-Jarvis Tray Application
+ASTRA Tray Application
 =======================
 Full-featured pystray-based system tray app with:
  - Color-coded status icon (idle/listening/processing/sleep)
@@ -24,7 +24,7 @@ from PIL import Image, ImageDraw, ImageFont
 # Project modules
 from config import settings
 from utils.logger import get_logger
-from agent import JarvisAgent
+from agent import ASTRAAgent
 from memory.conversation import memory
 
 logger = get_logger()
@@ -91,7 +91,7 @@ def create_state_icon(state: str) -> Image.Image:
 # Main Tray Application class
 # ─────────────────────────────────────────────────────────────────────────────
 
-class JarvisTrayApp:
+class ASTRATrayApp:
     def __init__(self):
         self.state = "idle"
         self.icon: pystray.Icon | None = None
@@ -100,9 +100,9 @@ class JarvisTrayApp:
         self.work_thread: threading.Thread | None = None
         self.hotkey_hook = None
 
-        logger.info("JarvisTrayApp initializing agent...")
+        logger.info("ASTRATrayApp initializing agent...")
         try:
-            self.agent = JarvisAgent()
+            self.agent = ASTRAAgent()
         except Exception as e:
             logger.error(f"Agent init failed: {e}")
             self.agent = None
@@ -156,7 +156,7 @@ class JarvisTrayApp:
         initial_img = create_state_icon("idle")
 
         self.icon = pystray.Icon(
-            name="JarvisAssistant",
+            name="ASTRAAssistant",
             icon=initial_img,
             title=f"{settings.APP_NAME} — Idle",
             menu=self.create_menu(),
@@ -172,7 +172,7 @@ class JarvisTrayApp:
             logger.warning(f"Dashboard generation failed (non-fatal): {e}")
 
         # Greet user
-        self._speak("Jarvis is ready. Right-click the tray icon or press Ctrl Alt A.", block=False)
+        self._speak("ASTRA is ready. Right-click the tray icon or press Ctrl Alt A.", block=False)
 
         logger.info("Tray icon running — right-click it near the WiFi/battery icons.")
         logger.info("If icon is hidden, click the '^' arrow on the taskbar to find it.")
@@ -209,7 +209,7 @@ class JarvisTrayApp:
             logger.info("Hotkey pressed → stopping listen.")
             self.stop_listening()
         elif self.state == "sleep":
-            logger.info("Hotkey pressed but Jarvis is sleeping — wake via tray menu.")
+            logger.info("Hotkey pressed but ASTRA is sleeping — wake via tray menu.")
         else:
             logger.info(f"Hotkey pressed but state is '{self.state}' — ignored.")
 
@@ -286,7 +286,7 @@ class JarvisTrayApp:
     def toggle_sleep(self, icon=None, item=None) -> None:
         if self.state == "sleep":
             self.set_state("idle")
-            self._speak("Jarvis is awake.", block=False)
+            self._speak("ASTRA is awake.", block=False)
         else:
             self.stop_listening()
             self.set_state("sleep")
@@ -477,7 +477,7 @@ class JarvisTrayApp:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jarvis AI Assistant — Dashboard</title>
+    <title>ASTRA AI Assistant — Dashboard</title>
     <style>
         :root {{
             --bg: #0d1117; --surface: #161b22; --card: #21262d;
@@ -505,7 +505,7 @@ class JarvisTrayApp:
 </head>
 <body>
 <div class="container">
-    <h1>🤖 Jarvis AI Assistant</h1>
+    <h1>🤖 ASTRA AI Assistant</h1>
     <p class="subtitle">Windows System Tray Assistant — Powered by Google Gemini</p>
     <div class="grid">
         <div class="card">
@@ -530,13 +530,13 @@ class JarvisTrayApp:
         </div>
         <div class="card full">
             <h3>Troubleshooting Tips</h3>
-            <div class="tip">🔹 <strong>Icon not visible?</strong> Click the <code>^</code> arrow on the taskbar and drag Jarvis to the visible area.</div>
-            <div class="tip">🔹 <strong>Hotkey not working?</strong> Run <code>run_jarvis_console.bat</code> as Administrator.</div>
+            <div class="tip">🔹 <strong>Icon not visible?</strong> Click the <code>^</code> arrow on the taskbar and drag ASTRA to the visible area.</div>
+            <div class="tip">🔹 <strong>Hotkey not working?</strong> Run <code>run_ASTRA_console.bat</code> as Administrator.</div>
             <div class="tip">🔹 <strong>No voice output?</strong> Check Windows Sound settings → Output device.</div>
             <div class="tip">🔹 <strong>API errors?</strong> Open <code>.env</code> and verify your <code>GEMINI_API_KEY</code>.</div>
         </div>
     </div>
-    <p style="text-align:center;color:var(--muted);font-size:.8rem;margin-top:20px">Jarvis Assistant &copy; 2026 — <a href="https://aistudio.google.com/">Get Gemini API Key</a></p>
+    <p style="text-align:center;color:var(--muted);font-size:.8rem;margin-top:20px">ASTRA Assistant &copy; 2026 — <a href="https://aistudio.google.com/">Get Gemini API Key</a></p>
 </div>
 </body>
 </html>"""

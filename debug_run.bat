@@ -1,1 +1,1 @@
-@echo off cd /d c:\Users\acer\Personal_Assistant echo Starting Jarvis... echo. python main.py echo. echo ========================= echo Jarvis crashed or exited. echo ========================= pause
+@echo off cd /d c:\Users\acer\Personal_Assistant echo Starting ASTRA... echo. python main.py echo. echo ========================= echo ASTRA crashed or exited. echo ========================= pause

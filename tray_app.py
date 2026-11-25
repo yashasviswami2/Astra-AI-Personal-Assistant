@@ -94,7 +94,7 @@ def create_state_icon(state: str) -> Image.Image:
 class ASTRATrayApp:
     def __init__(self):
         self.state = "idle"
-        self.icon: pystray.Icon | None = None
+        self.icon = None
         self.running = True
         self.cancel_requested = False
         self.work_thread: threading.Thread | None = None

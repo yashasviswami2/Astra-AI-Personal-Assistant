@@ -32,7 +32,9 @@
         <div class="menu-label">MENU</div>
 
         <nav>
-
+            <button class="nav-btn" data-page="home">
+    🏠 Home Dashboard
+</button>
             <button class="nav-btn active" data-page="voice">
                 🎙️ Voice Assistant
             </button>
@@ -55,6 +57,21 @@
 
 <button class="nav-btn" data-page="productivity">
     🚀 Productivity Hub
+</button>
+<button class="nav-btn" data-page="memory">
+    🧠 Personal Memory
+</button>
+
+<button class="nav-btn" data-page="analytics">
+    📊 Quiz & Analytics
+</button>
+
+<button class="nav-btn" data-page="vision">
+    👁️ Vision Intelligence
+</button>
+
+<button class="nav-btn" data-page="automation">
+    ⚡ Smart Automation
 </button>
 
             <button class="nav-btn" data-page="about">
@@ -871,6 +888,814 @@
         <p class="focus-count">
             Completed focus sessions:
             <strong id="focus-sessions">0</strong>
+        </p>
+
+    </div>
+
+</section>
+<section class="page" id="home">
+
+    <div class="home-hero">
+        <div>
+            <span class="home-label">ASTRA INTELLIGENCE</span>
+            <h1 id="home-greeting">Welcome to ASTRA</h1>
+            <p id="home-date">Loading date...</p>
+            <p>Your intelligent academic and personal companion.</p>
+        </div>
+
+        <div class="home-clock" id="home-clock">
+            00:00:00
+        </div>
+    </div>
+
+    <div class="home-stats">
+
+        <div class="home-stat">
+            <span>📚 Registered Subjects</span>
+            <h2 id="home-subjects">0</h2>
+        </div>
+
+        <div class="home-stat">
+            <span>📝 Pending Assignments</span>
+            <h2 id="home-pending">0</h2>
+        </div>
+
+        <div class="home-stat">
+            <span>✅ Completed Tasks</span>
+            <h2 id="home-completed">0</h2>
+        </div>
+
+        <div class="home-stat">
+            <span>⚠️ Overdue Tasks</span>
+            <h2 id="home-overdue">0</h2>
+        </div>
+
+    </div>
+
+    <div class="home-grid">
+
+        <div class="home-panel">
+            <h2>🎯 Today's Priorities</h2>
+            <div id="home-priorities">
+                Loading priorities...
+            </div>
+        </div>
+
+        <div class="home-panel">
+            <h2>📅 Next Examination</h2>
+            <div id="home-next-exam">
+                Loading examinations...
+            </div>
+        </div>
+
+        <div class="home-panel">
+            <h2>📊 Academic Progress</h2>
+
+            <h1 id="home-progress">0%</h1>
+
+            <div class="home-progress-track">
+                <div id="home-progress-bar"></div>
+            </div>
+
+            <p>Assignment completion rate</p>
+        </div>
+
+        <div class="home-panel">
+            <h2>💻 System Health</h2>
+
+            <p>CPU Usage:
+                <strong id="home-cpu">--</strong>
+            </p>
+
+            <p>RAM Usage:
+                <strong id="home-ram">--</strong>
+            </p>
+
+            <p>Battery:
+                <strong id="home-battery">--</strong>
+            </p>
+
+            <p>Disk Usage:
+                <strong id="home-disk">--</strong>
+            </p>
+        </div>
+
+    </div>
+
+    <div class="home-panel home-briefing">
+
+        <h2>✨ AI Daily Briefing</h2>
+
+        <p>
+            Get personalized recommendations based on
+            your academic profile and upcoming deadlines.
+        </p>
+
+        <button class="academic-btn" id="home-briefing-btn">
+            Generate My Daily Briefing
+        </button>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>⚡ Quick Actions</h2>
+
+        <div class="home-actions">
+
+            <button class="academic-btn"
+                    data-home-page="chat">
+                💬 Ask ASTRA
+            </button>
+
+            <button class="academic-btn"
+                    data-home-page="student">
+                🎓 Student Workspace
+            </button>
+
+            <button class="academic-btn"
+                    data-home-page="materials">
+                📄 Study Materials
+            </button>
+
+            <button class="academic-btn"
+                    data-home-page="productivity">
+                ⏱ Focus Mode
+            </button>
+
+            <button class="academic-btn"
+                    data-home-page="commands">
+                ⚡ Quick Commands
+            </button>
+
+            <button class="academic-btn"
+                    data-home-page="voice">
+                🎙 Voice Assistant
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="page" id="memory">
+
+    <div class="home-hero">
+        <div>
+            <span class="home-label">
+                LONG-TERM INTELLIGENCE
+            </span>
+
+            <h1>🧠 Personal Memory</h1>
+
+            <p>
+                Teach ASTRA about your preferences,
+                goals and daily routine.
+            </p>
+        </div>
+    </div>
+
+    <div class="home-stats">
+
+        <div class="home-stat">
+            <span>Total Memories</span>
+            <h2 id="memory-total">0</h2>
+        </div>
+
+        <div class="home-stat">
+            <span>Categories</span>
+            <h2 id="memory-categories">0</h2>
+        </div>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>➕ Add or Update Memory</h2>
+
+        <form id="memory-form">
+
+            <div class="memory-form-grid">
+
+                <input
+                    id="memory-key"
+                    placeholder="Memory name, e.g. Preferred language"
+                    maxlength="100"
+                    required
+                >
+
+                <select id="memory-category">
+                    <option>General</option>
+                    <option>Education</option>
+                    <option>Career</option>
+                    <option>Preferences</option>
+                    <option>Routine</option>
+                    <option>Goals</option>
+                    <option>Personal</option>
+                </select>
+
+            </div>
+
+            <textarea
+                id="memory-value"
+                placeholder="What should ASTRA remember?"
+                rows="4"
+                maxlength="2000"
+                required
+            ></textarea>
+
+            <button type="submit" class="academic-btn">
+                💾 Save Memory
+            </button>
+
+            <button class="nav-btn" data-page="planner">
+    📅 Study Planner
+</button> 
+
+            <button type="button"
+        class="academic-btn"
+        id="memory-cancel">
+    Cancel
+</button>
+
+            <p id="memory-status"></p>
+
+        </form>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>🔍 Saved Memories</h2>
+
+        <input
+            id="memory-search"
+            placeholder="Search your memories..."
+        >
+
+        <div id="memory-list">
+            Loading memories...
+        </div>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>✨ AI Personalization</h2>
+
+        <p>
+            Ask ASTRA to use your saved preferences
+            to personalize its recommendations.
+        </p>
+
+        <button
+            class="academic-btn"
+            id="memory-ai-btn"
+        >
+            Generate Personalized Recommendations
+        </button>
+
+        <p>
+            Privacy: Memories are stored locally but are
+            not encrypted. Relevant memories may be sent
+            to Gemini when used in AI responses.
+            Do not save passwords or confidential credentials.
+        </p>
+
+    </div>
+
+</section>
+
+<section class="page" id="planner">
+
+    <div class="home-hero">
+
+        <div>
+            <span class="home-label">
+                INTELLIGENT ACADEMIC PLANNING
+            </span>
+
+            <h1>📅 AI Study Planner</h1>
+
+            <p>
+                Plan smarter, stay consistent and
+                achieve your academic goals.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="home-stats">
+
+        <div class="home-stat">
+            <span>Study Sessions</span>
+            <h2 id="planner-total">0</h2>
+        </div>
+
+        <div class="home-stat">
+            <span>Completed Sessions</span>
+            <h2 id="planner-completed">0</h2>
+        </div>
+
+        <div class="home-stat">
+            <span>Planned Study Time</span>
+            <h2 id="planner-planned">0h</h2>
+        </div>
+
+        <div class="home-stat">
+            <span>Completed Study Time</span>
+            <h2 id="planner-studied">0h</h2>
+        </div>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>📊 Daily Study Progress</h2>
+
+        <h1 id="planner-progress">0%</h1>
+
+        <div class="home-progress-track">
+            <div id="planner-progress-bar"></div>
+        </div>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>✨ Generate AI Timetable</h2>
+
+        <p>
+            ASTRA uses your academic records,
+            deadlines and study preferences.
+        </p>
+
+        <div class="planner-controls">
+
+            <div>
+                <label>Study Date</label>
+                <input type="date" id="planner-date">
+            </div>
+
+            <div>
+                <label>Available Study Hours</label>
+
+                <select id="planner-hours">
+                    <option value="1">1 Hour</option>
+                    <option value="2">2 Hours</option>
+                    <option value="3">3 Hours</option>
+                    <option value="4" selected>4 Hours</option>
+                    <option value="5">5 Hours</option>
+                    <option value="6">6 Hours</option>
+                    <option value="8">8 Hours</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Preferred Start Time</label>
+                <input type="time"
+                       id="planner-start"
+                       value="17:00">
+            </div>
+
+        </div>
+
+        <div class="planner-actions">
+
+            <button class="academic-btn"
+                    id="generate-timetable">
+                ✨ Generate AI Timetable
+            </button>
+
+            <button class="academic-btn"
+                    id="add-study-session">
+                ➕ Add Study Session
+            </button>
+
+            <button class="academic-btn"
+                    id="refresh-planner">
+                🔄 Refresh
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>📚 Your Study Schedule</h2>
+
+        <div id="planner-sessions">
+            Loading study sessions...
+        </div>
+
+    </div>
+
+</section>
+
+<section class="page" id="analytics">
+
+    <div class="home-hero">
+
+        <div>
+
+            <span class="home-label">
+                AI POWERED ACADEMIC ANALYTICS
+            </span>
+
+            <h1>📊 Quiz & Performance Analytics</h1>
+
+            <p>
+                Test your knowledge, discover weak topics
+                and improve your academic performance.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="home-stats">
+
+        <div class="home-stat">
+            <span>Quizzes Attempted</span>
+            <h2 id="quiz-total">0</h2>
+        </div>
+
+        <div class="home-stat">
+            <span>Questions Answered</span>
+            <h2 id="quiz-questions">0</h2>
+        </div>
+
+        <div class="home-stat">
+            <span>Overall Accuracy</span>
+            <h2 id="quiz-accuracy">0%</h2>
+        </div>
+
+        <div class="home-stat">
+            <span>Weak Topics</span>
+            <h2 id="quiz-weak-count">0</h2>
+        </div>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>🧠 Generate AI Quiz</h2>
+
+        <div class="quiz-controls">
+
+            <div>
+
+                <label>Subject</label>
+
+                <select id="quiz-subject">
+                    <option value="">
+                        Select subject
+                    </option>
+                </select>
+
+            </div>
+
+            <div>
+
+                <label>Topic</label>
+
+                <input
+                    id="quiz-topic"
+                    placeholder="e.g. Dynamic Programming"
+                >
+
+            </div>
+
+            <div>
+
+                <label>Difficulty</label>
+
+                <select id="quiz-difficulty">
+                    <option>Easy</option>
+                    <option selected>Medium</option>
+                    <option>Hard</option>
+                </select>
+
+            </div>
+
+            <div>
+
+                <label>Questions</label>
+
+                <select id="quiz-count">
+                    <option value="3">3 Questions</option>
+                    <option value="5" selected>5 Questions</option>
+                    <option value="10">10 Questions</option>
+                </select>
+
+            </div>
+
+            <div>
+
+                <label>Quiz Type</label>
+
+                <select id="quiz-type">
+                    <option>MCQ</option>
+                    <option>Theory</option>
+                    <option>Mixed</option>
+                </select>
+
+            </div>
+
+        </div>
+
+        <button class="academic-btn" id="start-ai-quiz">
+            🚀 Start AI Quiz
+        </button>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>📈 Subject-wise Performance</h2>
+
+        <div id="subject-performance">
+            No performance records available.
+        </div>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>🎯 Topics Requiring Revision</h2>
+
+        <div id="weak-topics-list">
+            No weak topics recorded.
+        </div>
+
+        <button class="academic-btn" id="quiz-revision-btn">
+            ✨ Generate Personalized Revision Plan
+        </button>
+
+    </div>
+
+    <div class="home-panel">
+
+        <div class="panel-header">
+
+            <h2>📚 Quiz History</h2>
+
+            <button class="academic-btn" id="refresh-analytics">
+                🔄 Refresh
+            </button>
+
+        </div>
+
+        <div id="quiz-history">
+            No quizzes attempted yet.
+        </div>
+
+    </div>
+
+</section>
+
+<section class="page" id="vision">
+
+    <div class="home-hero">
+
+        <div>
+
+            <span class="home-label">
+                MULTIMODAL ARTIFICIAL INTELLIGENCE
+            </span>
+
+            <h1>👁️ ASTRA Vision Intelligence</h1>
+
+            <p>
+                See, understand and interact with
+                visual information using AI.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>🖥️ Screen Analysis</h2>
+
+        <p>
+            Ask ASTRA to understand what is currently
+            displayed on your computer screen.
+        </p>
+
+        <textarea
+            id="vision-question"
+            rows="4"
+            placeholder="What would you like ASTRA to analyze?"
+        ></textarea>
+
+        <div class="vision-controls">
+
+            <div>
+
+                <label>Capture Delay</label>
+
+                <select id="vision-delay">
+                    <option value="3">3 Seconds</option>
+                    <option value="5" selected>5 Seconds</option>
+                    <option value="10">10 Seconds</option>
+                </select>
+
+            </div>
+
+            <button
+                class="academic-btn"
+                id="analyze-screen-btn"
+            >
+                👁️ Analyze My Screen
+            </button>
+
+        </div>
+
+        <p id="vision-status"></p>
+
+        <p class="vision-privacy">
+            Privacy: Your screenshot is sent to Gemini
+            for analysis. Close confidential information
+            before capturing your screen.
+        </p>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>⚡ Quick Analysis</h2>
+
+        <div class="vision-actions">
+
+            <button class="academic-btn"
+                data-vision="Explain everything visible on my screen.">
+                🖥️ Explain Screen
+            </button>
+
+            <button class="academic-btn"
+                data-vision="Identify the visible programming error and suggest a solution.">
+                🐛 Debug Code
+            </button>
+
+            <button class="academic-btn"
+                data-vision="Explain the programming code visible on my screen.">
+                💻 Explain Code
+            </button>
+
+            <button class="academic-btn"
+                data-vision="Explain the academic question visible on my screen step by step.">
+                📚 Solve Question
+            </button>
+
+            <button class="academic-btn"
+                data-vision="Explain the diagram or flowchart visible on my screen.">
+                📊 Explain Diagram
+            </button>
+
+            <button class="academic-btn"
+                data-vision="Summarize the study material visible on my screen.">
+                📝 Summarize Content
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="home-panel">
+
+        <div class="panel-header">
+
+            <h2>✨ AI Visual Analysis</h2>
+
+            <button class="academic-btn"
+                    id="copy-vision-result">
+                📋 Copy Result
+            </button>
+
+        </div>
+
+        <div id="vision-result">
+            Your screen analysis will appear here.
+        </div>
+
+    </div>
+
+</section>
+
+<section class="page" id="automation">
+
+    <div class="home-hero">
+
+        <div>
+
+            <span class="home-label">
+                INTELLIGENT WORKFLOW AUTOMATION
+            </span>
+
+            <h1>⚡ ASTRA Smart Automation</h1>
+
+            <p>
+                Multiple tasks. One intelligent command.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="automation-grid">
+
+        <button class="automation-card"
+                data-workflow="Start study mode.">
+
+            <span>📚</span>
+
+            <h2>Study Mode</h2>
+
+            <p>
+                Open academic tools and research resources.
+            </p>
+
+        </button>
+
+        <button class="automation-card"
+                data-workflow="Start coding mode.">
+
+            <span>💻</span>
+
+            <h2>Coding Mode</h2>
+
+            <p>
+                Launch your programming environment.
+            </p>
+
+        </button>
+
+        <button class="automation-card"
+                data-workflow="Start research mode.">
+
+            <span>🔍</span>
+
+            <h2>Research Mode</h2>
+
+            <p>
+                Access academic research websites.
+            </p>
+
+        </button>
+
+        <button class="automation-card"
+                data-workflow="Prepare my exam environment and recommend revision priorities.">
+
+            <span>🎓</span>
+
+            <h2>Exam Preparation</h2>
+
+            <p>
+                Review exams, deadlines and weak topics.
+            </p>
+
+        </button>
+
+        <button class="automation-card"
+                data-workflow="Generate my daily intelligence briefing.">
+
+            <span>☀️</span>
+
+            <h2>Daily Briefing</h2>
+
+            <p>
+                Get academic priorities and system information.
+            </p>
+
+        </button>
+
+        <button class="automation-card"
+                data-workflow="Help me create a custom automation workflow. Ask which supported actions I want to perform.">
+
+            <span>⚙️</span>
+
+            <h2>Custom Workflow</h2>
+
+            <p>
+                Build a personalized automation sequence.
+            </p>
+
+        </button>
+
+    </div>
+
+    <div class="home-panel">
+
+        <h2>🛡️ Safe Automation</h2>
+
+        <p>
+            ASTRA uses predefined desktop actions and
+            reports individual workflow results.
+            Custom workflows require user approval.
         </p>
 
     </div>

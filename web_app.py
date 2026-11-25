@@ -410,6 +410,324 @@ def system_status():
         "os": platform.system(),
         "cores": psutil.cpu_count()
     })
+# =====================================
+# ASTRA PERSONAL MEMORY API
+# =====================================
+
+from tools.personal_memory import (
+    remember_information,
+    forget_information
+)
+
+
+@app.route("/api/memory", methods=["GET"])
+def api_personal_memory():
+
+    with get_connection() as conn:
+
+        rows = conn.execute("""
+            SELECT *
+            FROM personal_memory
+            ORDER BY category, memory_key
+        """).fetchall()
+
+    return jsonify({
+        "memories": [dict(row) for row in rows],
+        "total": len(rows)
+    })
+
+
+@app.route("/api/memory", methods=["POST"])
+def api_save_memory():
+
+    data = request.get_json(silent=True) or {}
+
+    key = data.get("key", "")
+    value = data.get("value", "")
+    category = data.get("category", "General")
+
+    if not all(isinstance(item, str)
+               for item in (key, value, category)):
+        return jsonify({"error": "Invalid input."}), 400
+
+    key = key.strip()
+    value = value.strip()
+
+    if not key or not value:
+        return jsonify({
+            "error": "Memory key and value are required."
+        }), 400
+
+    if len(key) > 100 or len(value) > 2000:
+        return jsonify({
+            "error": "Memory entry is too long."
+        }), 400
+
+    result = remember_information(key, value, category)
+
+    return jsonify({
+        "success": True,
+        "message": result
+    })
+
+
+@app.route("/api/memory/<int:memory_id>", methods=["DELETE"])
+def api_delete_memory(memory_id):
+
+    with get_connection() as conn:
+
+        cursor = conn.execute("""
+            DELETE FROM personal_memory
+            WHERE id = ?
+        """, (memory_id,))
+
+        deleted = cursor.rowcount
+
+    if deleted == 0:
+        return jsonify({
+            "error": "Memory not found."
+        }), 404
+
+    return jsonify({
+        "success": True
+    })
+
+# =====================================
+# ASTRA STUDY PLANNER API
+# =====================================
+
+@app.route("/api/study/sessions", methods=["GET"])
+def api_study_sessions():
+
+    study_date = request.args.get(
+        "date",
+        datetime.now().strftime("%Y-%m-%d")
+    )
+
+    try:
+        study_date = datetime.strptime(
+            study_date, "%Y-%m-%d"
+        ).strftime("%Y-%m-%d")
+
+    except ValueError:
+        return jsonify({"error": "Invalid date."}), 400
+
+    with get_connection() as conn:
+
+        rows = conn.execute("""
+            SELECT ss.*, s.name AS subject
+            FROM study_sessions ss
+            JOIN subjects s ON ss.subject_id = s.id
+            WHERE ss.study_date = ?
+            ORDER BY ss.start_time
+        """, (study_date,)).fetchall()
+
+    sessions = [dict(row) for row in rows]
+
+    planned = sum(
+        s["duration_minutes"] for s in sessions
+    )
+
+    completed = sum(
+        s["duration_minutes"] for s in sessions
+        if s["status"] == "Completed"
+    )
+
+    return jsonify({
+        "sessions": sessions,
+        "stats": {
+            "total": len(sessions),
+            "completed": sum(
+                s["status"] == "Completed"
+                for s in sessions
+            ),
+            "planned_minutes": planned,
+            "completed_minutes": completed,
+            "progress": round(
+                completed / planned * 100
+            ) if planned else 0
+        }
+    })
+
+
+@app.route(
+    "/api/study/session/<int:session_id>/complete",
+    methods=["POST"]
+)
+def api_complete_study_session(session_id):
+
+    with get_connection() as conn:
+
+        cursor = conn.execute("""
+            UPDATE study_sessions
+            SET status = 'Completed'
+            WHERE id = ?
+        """, (session_id,))
+
+        updated = cursor.rowcount
+
+    if updated == 0:
+        return jsonify({
+            "error": "Session not found."
+        }), 404
+
+    return jsonify({"success": True})
+
+
+@app.route(
+    "/api/study/session/<int:session_id>",
+    methods=["DELETE"]
+)
+def api_delete_study_session(session_id):
+
+    with get_connection() as conn:
+
+        cursor = conn.execute("""
+            DELETE FROM study_sessions
+            WHERE id = ?
+        """, (session_id,))
+
+        deleted = cursor.rowcount
+
+    if deleted == 0:
+        return jsonify({
+            "error": "Session not found."
+        }), 404
+
+    return jsonify({"success": True})
+
+# =====================================
+# ASTRA QUIZ ANALYTICS API
+# =====================================
+
+@app.route("/api/quiz/analytics", methods=["GET"])
+def api_quiz_analytics():
+
+    with get_connection() as conn:
+
+        results = conn.execute("""
+            SELECT q.*, s.name AS subject, s.semester
+            FROM quiz_results q
+            JOIN subjects s ON q.subject_id = s.id
+            ORDER BY q.id DESC
+        """).fetchall()
+
+        performance = conn.execute("""
+            SELECT
+                s.name AS subject,
+                s.semester,
+                COUNT(q.id) AS quizzes,
+                SUM(q.total_questions) AS questions,
+                SUM(q.correct_answers) AS correct,
+                ROUND(
+                    100.0 * SUM(q.correct_answers)
+                    / SUM(q.total_questions), 2
+                ) AS accuracy
+            FROM quiz_results q
+            JOIN subjects s ON q.subject_id = s.id
+            GROUP BY s.id, s.name, s.semester
+            ORDER BY accuracy DESC
+        """).fetchall()
+
+        weak_topics = conn.execute("""
+            SELECT
+                s.name AS subject,
+                s.semester,
+                q.topic,
+                COUNT(q.id) AS attempts,
+                ROUND(
+                    100.0 * SUM(q.correct_answers)
+                    / SUM(q.total_questions), 2
+                ) AS accuracy
+            FROM quiz_results q
+            JOIN subjects s ON q.subject_id = s.id
+            GROUP BY s.id, s.name, s.semester,
+                     q.topic COLLATE NOCASE
+            HAVING
+                100.0 * SUM(q.correct_answers)
+                / SUM(q.total_questions) < 60
+            ORDER BY accuracy ASC
+        """).fetchall()
+
+    total_questions = sum(
+        row["total_questions"] for row in results
+    )
+
+    total_correct = sum(
+        row["correct_answers"] for row in results
+    )
+
+    accuracy = round(
+        total_correct / total_questions * 100, 2
+    ) if total_questions else 0
+
+    return jsonify({
+        "stats": {
+            "total_quizzes": len(results),
+            "total_questions": total_questions,
+            "correct_answers": total_correct,
+            "accuracy": accuracy,
+            "weak_topics": len(weak_topics)
+        },
+        "performance": [dict(row) for row in performance],
+        "weak_topics": [dict(row) for row in weak_topics],
+        "history": [dict(row) for row in results[:50]]
+    })
+
+
+@app.route("/api/quiz/result/<int:result_id>", methods=["DELETE"])
+def api_delete_quiz_result(result_id):
+
+    with get_connection() as conn:
+
+        cursor = conn.execute("""
+            DELETE FROM quiz_results
+            WHERE id = ?
+        """, (result_id,))
+
+        deleted = cursor.rowcount
+
+    if deleted == 0:
+        return jsonify({
+            "error": "Quiz result not found."
+        }), 404
+
+    return jsonify({"success": True})
+
+# =====================================
+# ASTRA MULTIMODAL VISION API
+# =====================================
+
+from tools.vision_tools import analyze_screen
+
+
+@app.route("/api/vision/analyze", methods=["POST"])
+def api_analyze_screen():
+
+    data = request.get_json(silent=True) or {}
+
+    question = data.get(
+        "question",
+        "Explain what is currently visible on my screen."
+    )
+
+    if not isinstance(question, str):
+        return jsonify({
+            "error": "Invalid question."
+        }), 400
+
+    question = question.strip()
+
+    if not question or len(question) > 3000:
+        return jsonify({
+            "error": "Enter a valid question."
+        }), 400
+
+    result = analyze_screen(question)
+
+    return jsonify({
+        "response": result
+    })
 
 if __name__ == "__main__":
 

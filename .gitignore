@@ -21,3 +21,8 @@ ASTRA_SOURCE_CODE.txt
 .env
 memory/*.json
 node_modules/
+
+data/
+*.db
+*.db-wal
+*.db-shm

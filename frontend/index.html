@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>ASTRA | Your Personal AI Companion</title>
+    <title>ASTRA | Personal AI & Academic Companion</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -14,7 +14,10 @@
 
 <div class="app-container">
 
-    <!-- SIDEBAR -->
+    <!-- ==========================================
+         SIDEBAR
+    ========================================== -->
+
     <aside class="sidebar">
 
         <div class="logo">
@@ -29,6 +32,7 @@
         <div class="menu-label">MENU</div>
 
         <nav>
+
             <button class="nav-btn active" data-page="voice">
                 🎙️ Voice Assistant
             </button>
@@ -41,32 +45,51 @@
                 ⚡ Commands
             </button>
 
+            <button class="nav-btn" data-page="student">
+                🎓 Student Workspace
+            </button>
+
+            <button class="nav-btn" data-page="materials">
+    📄 Study Materials
+</button>
+
+<button class="nav-btn" data-page="productivity">
+    🚀 Productivity Hub
+</button>
+
             <button class="nav-btn" data-page="about">
                 ℹ️ About
             </button>
+
         </nav>
 
         <div class="sidebar-bottom">
+
             <div class="status-indicator"></div>
 
             <div>
                 <strong>System Online</strong>
                 <small>Gemini AI Connected</small>
             </div>
+
         </div>
 
     </aside>
 
 
-    <!-- MAIN CONTENT -->
+    <!-- ==========================================
+         MAIN CONTENT
+    ========================================== -->
+
     <main class="main-content">
 
         <!-- TOPBAR -->
+
         <header class="topbar">
 
             <div>
                 <h1 id="page-title">Voice Assistant</h1>
-                <p>Your personal AI-powered desktop assistant</p>
+                <p>Your personal AI and academic productivity companion</p>
             </div>
 
             <div class="top-status">
@@ -77,7 +100,10 @@
         </header>
 
 
-        <!-- VOICE PAGE -->
+        <!-- ==========================================
+             VOICE ASSISTANT
+        ========================================== -->
+
         <section class="page active" id="voice">
 
             <div class="welcome">
@@ -86,7 +112,10 @@
 
                 <h2>Hello, I'm ASTRA.</h2>
 
-                <p>Your intelligent personal assistant is ready.</p>
+                <p>
+                    Your intelligent personal and academic
+                    assistant is ready.
+                </p>
 
                 <div class="voice-status">
                     <span class="online-dot"></span>
@@ -100,13 +129,20 @@
                 <h3>Voice Assistant</h3>
 
                 <p>
-                    Interact with ASTRA using your voice through
-                    the desktop assistant.
+                    Interact with ASTRA using your voice,
+                    manage academic tasks and automate
+                    everyday desktop activities.
                 </p>
 
                 <p>
-                    Use <strong>Ctrl + Alt + A</strong> to activate
-                    voice listening.
+                    Use the microphone in AI Chat to speak
+                    directly to ASTRA.
+                </p>
+
+                <p>
+                    Use <strong>Ctrl + Alt + A</strong> to
+                    activate voice listening when the desktop
+                    tray assistant is running.
                 </p>
 
             </div>
@@ -114,7 +150,10 @@
         </section>
 
 
-        <!-- CHAT PAGE -->
+        <!-- ==========================================
+             AI CHAT
+        ========================================== -->
+
         <section class="page chat-page" id="chat">
 
             <div class="chat-welcome">
@@ -122,32 +161,41 @@
                 <h2>AI Chat</h2>
 
                 <p>
-                    Ask ASTRA anything. Powered by Google Gemini.
+                    Learn, explore, automate and stay productive.
+                    Powered by Google Gemini.
+
+                    <div class="chat-toolbar">
+                        <button id="voice-toggle" class="academic-btn">
+    🔇 Voice Output: OFF
+</button>
+
+    <button id="export-chat" class="academic-btn">
+        ⬇ Export Chat
+    </button>
+
+    <button id="clear-chat" class="academic-btn">
+        🗑 Clear Chat View
+    </button>
+
+</div>
                 </p>
 
             </div>
 
-
-            <!-- CHAT MESSAGES -->
             <div class="chat-messages" id="chat-messages">
 
                 <div class="message bot">
 
                     <div class="avatar">A</div>
 
-                    <div class="message-content">
-                        Hello! I'm ASTRA. How can I help you today?
-                    </div>
+                    <div class="message-content">Hello! I'm ASTRA, your personal AI and academic companion. How can I help you today?</div>
 
                 </div>
 
             </div>
 
-
-            <!-- CHAT INPUT -->
             <form id="chat-form" class="chat-input-area">
 
-                <!-- MICROPHONE BUTTON -->
                 <button
                     type="button"
                     id="mic-btn"
@@ -157,7 +205,6 @@
                     🎙️
                 </button>
 
-                <!-- TEXT INPUT -->
                 <input
                     type="text"
                     id="user-input"
@@ -166,13 +213,15 @@
                     required
                 >
 
-                <!-- SEND BUTTON -->
-                <button type="submit" id="send-btn" title="Send message">
+                <button
+                    type="submit"
+                    id="send-btn"
+                    title="Send message"
+                >
                     ➤
                 </button>
 
             </form>
-
 
             <p class="input-hint">
                 ASTRA can make mistakes. Verify important information.
@@ -181,54 +230,652 @@
         </section>
 
 
-        <!-- COMMANDS PAGE -->
+        <!-- ==========================================
+             DESKTOP COMMANDS
+        ========================================== -->
+
         <section class="page" id="commands">
 
             <h2>Available Commands</h2>
 
             <div class="info-card">
 
-                <p>🚀 Open Chrome</p>
-                <p>▶️ Open YouTube</p>
-                <p>🔍 Search the web</p>
-                <p>📸 Take a screenshot</p>
-                <p>🕒 Get current time</p>
-                <p>📄 Summarize a PDF</p>
+                <button
+                    class="command-card"
+                    data-command="Open Google Chrome"
+                >
+                    🚀 Open Chrome
+                </button>
+
+                <button
+                    class="command-card"
+                    data-command="Open YouTube"
+                >
+                    ▶️ Open YouTube
+                </button>
+
+                <button
+                    class="command-card"
+                    data-action="search"
+                >
+                    🔍 Search the web
+                </button>
+
+                <button
+                    class="command-card"
+                    data-command="Take a screenshot"
+                >
+                    📸 Take a screenshot
+                </button>
+
+                <button
+                    class="command-card"
+                    data-command="Tell me the current date and time"
+                >
+                    🕒 Get current time
+                </button>
+
+                <button
+                    class="command-card"
+                    data-action="pdf"
+                >
+                    📄 Summarize a PDF
+                </button>
+
+                <button
+                    class="command-card"
+                    data-command="Open Notepad"
+                >
+                    📝 Open Notepad
+                </button>
+
+                <button
+                    class="command-card"
+                    data-command="Open Calculator"
+                >
+                    🧮 Open Calculator
+                </button>
+
+                <button
+                    class="command-card"
+                    data-command="Open VS Code"
+                >
+                    💻 Open VS Code
+                </button>
+
+                <button
+                    class="command-card"
+                    data-command="Show my pending assignments"
+                >
+                    📋 Pending Assignments
+                </button>
+
+                <button
+                    class="command-card"
+                    data-command="Show my registered semester subjects"
+                >
+                    📚 My Subjects
+                </button>
+
+                <button
+                    class="command-card"
+                    data-command="Show my upcoming and overdue assignment deadlines"
+                >
+                    🔔 Upcoming Deadlines
+                </button>
 
             </div>
 
         </section>
 
 
-        <!-- ABOUT PAGE -->
+        <!-- ==========================================
+             STUDENT WORKSPACE
+        ========================================== -->
+
+        <section class="page" id="student">
+
+            <!-- WELCOME BANNER -->
+
+            <div class="student-banner">
+
+                <div class="student-label">
+                    ASTRA ACADEMIC INTELLIGENCE
+                </div>
+
+                <h2 id="student-greeting">
+                    Welcome, Student!
+                </h2>
+
+                <p id="student-profile-text">
+                    Your intelligent academic workspace.
+                </p>
+
+            </div>
+
+
+            <!-- ACADEMIC STATISTICS -->
+
+            <div class="student-stats">
+
+                <div class="stat-card">
+                    <span>📚 Subjects</span>
+                    <strong id="stat-subjects">0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span>📝 Pending</span>
+                    <strong id="stat-pending">0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span>✅ Completed</span>
+                    <strong id="stat-completed">0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span>⚠️ Overdue</span>
+                    <strong id="stat-overdue">0</strong>
+                </div>
+
+            </div>
+
+
+            <!-- ACADEMIC QUICK ACTIONS -->
+
+            <h3 class="student-heading">
+                AI Academic Tools
+            </h3>
+
+            <div class="academic-actions">
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Help me set up my academic profile."
+                >
+                    👤 Set Up Profile
+                </button>
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Help me register my semester subjects."
+                >
+                    📚 Add Subjects
+                </button>
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Help me save a new assignment and its deadline."
+                >
+                    📝 Add Assignment
+                </button>
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Act as my personal AI tutor. Ask me which subject and topic I want to study."
+                >
+                    🧠 AI Tutor
+                </button>
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Generate a personalized quiz. Ask me which subject I want to practice."
+                >
+                    🎯 Generate Quiz
+                </button>
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Create a personalized study plan based on my saved subjects and assignment deadlines."
+                >
+                    📅 Study Planner
+                </button>
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Help me create exam-ready revision notes."
+                >
+                    📖 Revision Notes
+                </button>
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Show my upcoming and overdue assignment deadlines."
+                >
+                    🔔 Check Deadlines
+                </button>
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Help me prepare important examination questions from one of my registered subjects."
+                >
+                    🎓 Exam Preparation
+                </button>
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Help me understand a difficult programming concept with examples and code."
+                >
+                    💻 Coding Assistant
+                </button>
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Conduct an interactive viva practice session. Ask me which subject I want to prepare."
+                >
+                    🎤 Viva Practice
+                </button>
+
+                <button
+                    class="academic-btn"
+                    data-prompt="Help me revise a subject using short definitions, important concepts and practice questions."
+                >
+                    ⚡ Quick Revision
+                </button>
+
+            </div>
+
+
+            <!-- REGISTERED SUBJECTS -->
+
+            <div class="student-panel">
+
+                <h3>📚 My Subjects</h3>
+
+                <div
+                    id="student-subjects"
+                    class="subject-grid"
+                >
+                    Loading subjects...
+                </div>
+
+            </div>
+
+
+            <!-- ASSIGNMENT TRACKER -->
+
+            <div class="student-panel">
+
+                <div class="panel-header">
+
+                    <h3>📝 Assignment Tracker</h3>
+
+                    <button
+                        id="refresh-student"
+                        class="academic-btn"
+                    >
+                        ↻ Refresh
+                    </button>
+
+                </div>
+
+                <div id="student-assignments">
+                    Loading assignments...
+                </div>
+
+            </div>
+            <!-- ASTRA EXAM PLANNER -->
+
+<div class="student-panel">
+
+    <div class="panel-header">
+
+        <h3>📅 Examination Planner</h3>
+
+        <button id="refresh-exams" class="academic-btn">
+            ↻ Refresh
+        </button>
+
+    </div>
+
+    <div class="academic-actions">
+
+        <button id="add-exam-btn" class="academic-btn">
+            ➕ Add Examination
+        </button>
+
+        <button id="exam-plan-btn" class="academic-btn">
+            🧠 Generate Study Plan
+        </button>
+
+    </div>
+
+    <div id="exam-list">
+        Loading examinations...
+    </div>
+
+</div>
+
+        </section>
+
+
+        <!-- ==========================================
+             ABOUT ASTRA
+        ========================================== -->
+
         <section class="page" id="about">
 
             <h2>About ASTRA</h2>
 
             <div class="info-card">
 
-                <h3>Your Personal AI Companion</h3>
+                <h3>ASTRA — Personal AI & Academic Companion</h3>
 
                 <p>
-                    ASTRA is an intelligent desktop AI assistant
-                    developed using Python and Google Gemini.
+                    ASTRA is an intelligent AI-powered desktop
+                    assistant designed to simplify everyday tasks
+                    and improve academic productivity for college
+                    students.
                 </p>
 
-                <p><strong>Backend:</strong> Python + Flask</p>
+                <p>
+                    It combines artificial intelligence, natural
+                    language processing, desktop automation,
+                    voice recognition and persistent academic
+                    memory into a unified application.
+                </p>
 
-                <p><strong>AI Model:</strong> Google Gemini</p>
+            </div>
 
-                <p><strong>Interface:</strong> HTML, CSS and JavaScript</p>
+            <div class="info-card">
 
-                <p><strong>Speech Recognition:</strong> Python Speech Recognition</p>
+                <h3>Core Capabilities</h3>
 
-                <p><strong>Text to Speech:</strong> pyttsx3</p>
+                <p>🤖 Intelligent AI conversation</p>
 
-                <p><strong>AI Integration:</strong> Gemini API</p>
+                <p>🎙️ Voice recognition and speech synthesis</p>
+
+                <p>⚡ Multi-step desktop automation</p>
+
+                <p>🧠 Persistent conversation memory</p>
+
+                <p>🎓 Personalized academic assistance</p>
+
+                <p>📚 Semester and subject management</p>
+
+                <p>📝 Assignment and deadline tracking</p>
+
+                <p>📖 AI-powered tutoring and revision</p>
+
+                <p>🎯 Quiz generation and viva preparation</p>
+
+                <p>📄 PDF text extraction and summarization</p>
+
+            </div>
+
+            <div class="info-card">
+
+                <h3>Technology Stack</h3>
+
+                <p>
+                    <strong>Programming Language:</strong> Python
+                </p>
+
+                <p>
+                    <strong>Backend Framework:</strong> Flask
+                </p>
+
+                <p>
+                    <strong>AI Model:</strong> Google Gemini
+                </p>
+
+                <p>
+                    <strong>Database:</strong> SQLite
+                </p>
+
+                <p>
+                    <strong>Frontend:</strong> HTML, CSS and JavaScript
+                </p>
+
+                <p>
+                    <strong>Speech Recognition:</strong> SpeechRecognition
+                </p>
+
+                <p>
+                    <strong>Text-to-Speech:</strong> pyttsx3
+                </p>
+
+                <p>
+                    <strong>Desktop Automation:</strong> PyAutoGUI
+                </p>
+
+                <p>
+                    <strong>AI Architecture:</strong> Agentic Function Calling
+                </p>
+
+                <p>
+                    <strong>Version Control:</strong> Git and GitHub
+                </p>
+
+            </div>
+
+            <div class="info-card">
+
+                <h3>Project Objective</h3>
+
+                <p>
+                    To develop an intelligent personal assistant
+                    that integrates academic productivity and
+                    desktop automation, allowing students to
+                    manage their academic responsibilities and
+                    access personalized AI assistance through
+                    a single interface.
+                </p>
+
+                <p>
+                    <strong>Version:</strong> ASTRA 2.0
+                </p>
+
+                <p>
+                    <strong>Category:</strong> Artificial Intelligence
+                    and Software Development
+                </p>
 
             </div>
 
         </section>
+
+        <!-- ASTRA STUDY MATERIALS -->
+
+<section class="page" id="materials">
+
+    <div class="student-banner">
+
+        <div class="student-label">
+            ASTRA DOCUMENT INTELLIGENCE
+        </div>
+
+        <h2>AI Study Material Assistant</h2>
+
+        <p>
+            Transform your lecture notes, textbooks and
+            study materials into personalized learning resources.
+        </p>
+
+    </div>
+
+    <div class="student-panel">
+
+        <h3>📄 Upload Study Material</h3>
+
+        <label class="pdf-upload-area">
+
+            <span class="pdf-icon">📚</span>
+
+            <strong>Select your PDF document</strong>
+
+            <small>PDF files up to 20 MB</small>
+
+            <input
+                type="file"
+                id="study-pdf"
+                accept=".pdf,application/pdf"
+            >
+
+        </label>
+
+        <p id="pdf-file-name">No file selected</p>
+
+        <h3 class="student-heading">Choose Study Mode</h3>
+
+        <select id="pdf-mode">
+
+            <option value="summary">📄 Summarize PDF</option>
+
+            <option value="teach">🧠 Teach Me</option>
+
+            <option value="notes">📝 Exam Notes</option>
+
+            <option value="questions">🎯 Important Questions</option>
+
+            <option value="quiz">❓ Generate Quiz</option>
+
+            <option value="revision">⚡ Last-Minute Revision</option>
+
+            <option value="ask">💬 Ask PDF</option>
+
+        </select>
+
+        <textarea
+            id="pdf-question"
+            placeholder="Enter a specific topic or question (optional)"
+        ></textarea>
+
+        <p class="input-hint">
+            Extracted document text will be sent to Google Gemini
+            for AI analysis. Upload only material you are permitted
+            to share.
+        </p>
+
+        <button id="analyze-pdf" class="academic-btn">
+            ✨ Analyze with ASTRA
+        </button>
+
+    </div>
+
+    <div class="student-panel">
+
+        <div class="panel-header">
+
+            <h3>✨ AI Generated Study Material</h3>
+
+            <button id="copy-pdf-result" class="academic-btn">
+                📋 Copy
+            </button>
+
+        </div>
+
+        <p id="pdf-status"></p>
+
+        <div id="pdf-result">
+            Your generated study material will appear here.
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ASTRA PRODUCTIVITY HUB -->
+
+<section class="page" id="productivity">
+
+    <div class="student-banner">
+        <div class="student-label">
+            ASTRA PRODUCTIVITY INTELLIGENCE
+        </div>
+
+        <h2>Productivity Hub</h2>
+
+        <p>Stay focused, manage your time and monitor your computer.</p>
+    </div>
+
+    <div class="student-panel">
+
+        <h3>💻 Live System Monitor</h3>
+
+        <div class="monitor-grid">
+
+            <div class="monitor-card">
+                <span>CPU Usage</span>
+                <strong id="cpu-value">--%</strong>
+                <progress id="cpu-bar" max="100" value="0"></progress>
+            </div>
+
+            <div class="monitor-card">
+                <span>Memory Usage</span>
+                <strong id="ram-value">--%</strong>
+                <progress id="ram-bar" max="100" value="0"></progress>
+            </div>
+
+            <div class="monitor-card">
+                <span>Disk Usage</span>
+                <strong id="disk-value">--%</strong>
+                <progress id="disk-bar" max="100" value="0"></progress>
+            </div>
+
+            <div class="monitor-card">
+                <span>Battery</span>
+                <strong id="battery-value">--%</strong>
+                <progress id="battery-bar" max="100" value="0"></progress>
+            </div>
+
+        </div>
+
+        <p id="system-details"></p>
+
+    </div>
+
+    <div class="student-panel focus-panel">
+
+        <h3>🎯 Pomodoro Focus Timer</h3>
+
+        <div class="focus-modes">
+
+            <button class="academic-btn focus-mode"
+                    data-minutes="25">
+                Focus
+            </button>
+
+            <button class="academic-btn focus-mode"
+                    data-minutes="5">
+                Short Break
+            </button>
+
+            <button class="academic-btn focus-mode"
+                    data-minutes="15">
+                Long Break
+            </button>
+
+        </div>
+
+        <div id="focus-timer">25:00</div>
+
+        <p id="focus-status">Ready to focus</p>
+
+        <div class="focus-controls">
+
+            <button class="academic-btn" id="focus-start">
+                ▶ Start / Resume
+            </button>
+
+            <button class="academic-btn" id="focus-pause">
+                ⏸ Pause
+            </button>
+
+            <button class="academic-btn" id="focus-reset">
+                ↻ Reset
+            </button>
+
+        </div>
+
+        <p class="focus-count">
+            Completed focus sessions:
+            <strong id="focus-sessions">0</strong>
+        </p>
+
+    </div>
+
+</section>
 
     </main>
 
@@ -236,8 +883,13 @@
 
 
 <!-- JAVASCRIPT -->
+
+<script src="{{ url_for('static', filename='vendor/marked.min.js') }}"></script>
+
+<script src="{{ url_for('static', filename='vendor/purify.min.js') }}"></script>
+
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
-</html>
 
+</html>

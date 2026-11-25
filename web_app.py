@@ -1,6 +1,11 @@
 from flask import Flask, render_template, request, jsonify
 from pathlib import Path
 import logging
+from student.database import get_connection
+from datetime import datetime, timedelta
+
+from student.pdf_assistant import analyze_pdf
+from io import BytesIO
 
 from agent import ASTRAAgent
 from voice.stt import stt_manager
@@ -167,6 +172,245 @@ def speak():
 # RUN ASTRA
 # ==========================================
 
+# ==========================================
+# ASTRA STUDENT DASHBOARD API
+# ==========================================
+
+@app.route("/api/student/dashboard")
+def student_dashboard():
+
+    try:
+
+        with get_connection() as conn:
+
+            profile = conn.execute(
+                "SELECT * FROM student_profile WHERE id = 1"
+            ).fetchone()
+
+            subjects = conn.execute("""
+                SELECT * FROM subjects
+                ORDER BY semester, name
+            """).fetchall()
+
+            assignments = conn.execute("""
+                SELECT assignments.*,
+                       subjects.name AS subject
+                FROM assignments
+                JOIN subjects
+                ON assignments.subject_id = subjects.id
+                ORDER BY deadline
+            """).fetchall()
+
+        now = datetime.now()
+
+        assignment_data = []
+
+        for row in assignments:
+
+            item = dict(row)
+
+            deadline = datetime.strptime(
+                item["deadline"], "%Y-%m-%d %H:%M"
+            )
+
+            if item["status"] == "Completed":
+                item["urgency"] = "Completed"
+
+            elif deadline < now:
+                item["urgency"] = "Overdue"
+
+            elif deadline - now <= timedelta(hours=24):
+                item["urgency"] = "Urgent"
+
+            else:
+                item["urgency"] = "Upcoming"
+
+            assignment_data.append(item)
+
+        return jsonify({
+
+            "profile": dict(profile) if profile else None,
+
+            "subjects": [dict(s) for s in subjects],
+
+            "assignments": assignment_data,
+
+            "stats": {
+
+                "subjects": len(subjects),
+
+                "total": len(assignments),
+
+                "pending": sum(
+                    a["status"] == "Pending"
+                    for a in assignments
+                ),
+
+                "completed": sum(
+                    a["status"] == "Completed"
+                    for a in assignments
+                ),
+
+                "overdue": sum(
+                    a["urgency"] == "Overdue"
+                    for a in assignment_data
+                )
+            }
+        })
+
+    except Exception:
+
+        logger.exception("Student dashboard error")
+
+        return jsonify({
+            "error": "Could not load academic data."
+        }), 500
+
+
+@app.route(
+    "/api/student/assignment/<int:assignment_id>/complete",
+    methods=["POST"]
+)
+def finish_assignment(assignment_id):
+
+    with get_connection() as conn:
+
+        result = conn.execute("""
+            UPDATE assignments
+            SET status = 'Completed'
+            WHERE id = ?
+        """, (assignment_id,))
+
+        if result.rowcount == 0:
+
+            return jsonify({
+                "error": "Assignment not found."
+            }), 404
+
+    return jsonify({
+        "status": "success"
+    })
+
+# ASTRA ACADEMIC REMINDERS API
+
+from student.reminders import get_reminders
+
+
+@app.route("/api/student/reminders")
+def academic_reminders():
+
+    return jsonify({
+        "reminders": get_reminders()
+    })
+
+
+@app.route("/api/student/exams")
+def academic_exams():
+
+    with get_connection() as conn:
+
+        rows = conn.execute("""
+            SELECT exams.*, subjects.name AS subject
+            FROM exams
+            JOIN subjects
+            ON exams.subject_id = subjects.id
+            ORDER BY exam_date
+        """).fetchall()
+
+    return jsonify({
+        "exams": [dict(row) for row in rows]
+    })
+
+# ASTRA PDF STUDY ASSISTANT
+
+@app.route("/api/student/pdf", methods=["POST"])
+def study_pdf():
+
+    try:
+
+        uploaded_file = request.files.get("pdf")
+
+        if not uploaded_file:
+            return jsonify({
+                "error": "Please upload a PDF file."
+            }), 400
+
+        if not uploaded_file.filename.lower().endswith(".pdf"):
+            return jsonify({
+                "error": "Only PDF files are supported."
+            }), 400
+
+        mode = request.form.get("mode", "summary")
+        question = request.form.get("question", "").strip()
+
+        if mode == "ask" and not question:
+            return jsonify({
+                "error": "Please enter your question."
+            }), 400
+
+        max_size = 20 * 1024 * 1024
+
+        content = uploaded_file.stream.read(max_size + 1)
+
+        if len(content) > max_size:
+            return jsonify({
+                "error": "Maximum PDF size is 20 MB."
+            }), 400
+
+        if not content.startswith(b"%PDF-"):
+            return jsonify({
+                "error": "Invalid PDF file."
+            }), 400
+
+        result = analyze_pdf(
+            BytesIO(content),
+            mode,
+            question
+        )
+
+        return jsonify(result)
+
+    except ValueError as error:
+
+        return jsonify({
+            "error": str(error)
+        }), 400
+
+    except Exception:
+
+        logger.exception("PDF analysis failed")
+
+        return jsonify({
+            "error": "Unable to analyze the PDF. Check the terminal."
+        }), 500
+
+    # ASTRA LIVE SYSTEM MONITOR
+
+import psutil
+import platform
+from pathlib import Path
+
+
+@app.route("/api/system/status")
+def system_status():
+
+    ram = psutil.virtual_memory()
+    disk = psutil.disk_usage(Path.home().anchor)
+    battery = psutil.sensors_battery()
+
+    return jsonify({
+        "cpu": psutil.cpu_percent(interval=0.2),
+        "ram": ram.percent,
+        "ram_total": round(ram.total / (1024 ** 3), 2),
+        "ram_available": round(ram.available / (1024 ** 3), 2),
+        "disk": disk.percent,
+        "disk_free": round(disk.free / (1024 ** 3), 2),
+        "battery": battery.percent if battery else None,
+        "charging": battery.power_plugged if battery else None,
+        "os": platform.system(),
+        "cores": psutil.cpu_count()
+    })
+
 if __name__ == "__main__":
 
     print("\n===================================")
@@ -183,3 +427,5 @@ if __name__ == "__main__":
         debug=False,
         threaded=True
     )
+
+

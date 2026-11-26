@@ -23,15 +23,15 @@ TTS_VOLUME = float(os.getenv("TTS_VOLUME", 1.0)) # 0.0 to 1.0
 TTS_VOICE_GENDER = os.getenv("TTS_VOICE_GENDER", "female") # male/female
 
 # Speech Recognition Settings
-STT_LANGUAGE = "en-US"
-STT_ENERGY_THRESHOLD = 300  # Initial energy threshold for ambient noise
-STT_DYNAMIC_ENERGY_THRESHOLD = True
-STT_PAUSE_THRESHOLD = 0.7   # How long to wait after speech before considering it complete
+STT_LANGUAGE = "en-IN"
+STT_ENERGY_THRESHOLD = 150
+STT_DYNAMIC_ENERGY_THRESHOLD = False
+STT_PAUSE_THRESHOLD = 0.8
 STT_NON_SPEAKING_DURATION = 0.4
 STT_AMBIENT_NOISE_DURATION = 2.0
-STT_TIMEOUT = 10            # Time waiting for speech to start
-STT_PHRASE_LIMIT = 10       # Maximum duration of speech capture
-MICROPHONE_INDEX = 1    # Set to integer device index to override default mic
+STT_TIMEOUT = 15
+STT_PHRASE_LIMIT = 10
+MICROPHONE_INDEX = 1
 
 # Paths
 SCREENSHOT_DIR = BASE_DIR / "screenshots"

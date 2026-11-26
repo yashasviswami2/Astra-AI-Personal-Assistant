@@ -180,32 +180,58 @@ def load_environment() -> bool:
 # STEP 4 ─ Gemini API Connection Test
 # ──────────────────────────────────────────────
 def test_gemini_connection() -> bool:
-    """Try a lightweight Gemini call to confirm the key and internet work."""
+    """Check Gemini using the modern Google GenAI SDK."""
     step(4, "Testing Gemini API Connection")
+
+    client = None
+
     try:
-        import google.generativeai as genai
+        from google import genai
+        from google.genai import types
+
         api_key = os.getenv("GEMINI_API_KEY", "")
         model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-        genai.configure(api_key=api_key)
 
-        model = genai.GenerativeModel(model_name)
-        resp = model.generate_content("Say 'OK' in one word.", 
-                                       generation_config={"max_output_tokens": 5})
-        reply = resp.text.strip()
-        logger.info(f"  [OK] Gemini connection OK - model replied: '{reply}'")
+        client = genai.Client(api_key=api_key)
+
+        response = client.models.generate_content(
+            model=model_name,
+            contents="Reply with OK.",
+            config=types.GenerateContentConfig(
+                max_output_tokens=128
+            )
+        )
+
+        reply = (response.text or "").strip()
+
+        if not reply:
+            logger.warning("Gemini returned an empty response.")
+            return False
+
+        logger.info("  [OK] Gemini connection successful.")
         return True
 
     except Exception as e:
-        err = str(e)
-        if "API_KEY_INVALID" in err or "400" in err:
-            logger.error("  [FAIL] API key is invalid. Check your GEMINI_API_KEY in .env")
-        elif "quota" in err.lower():
-            logger.error("  [FAIL] API quota exceeded. Check your Google AI Studio quota.")
-        elif "ConnectionError" in err or "Failed to connect" in err:
-            logger.error("  [FAIL] No internet connection detected.")
+        err = str(e).lower()
+
+        if "429" in err or "quota" in err or "resource_exhausted" in err:
+            logger.warning(
+                "Gemini quota exceeded. Local commands remain available."
+            )
+        elif "api_key_invalid" in err or "401" in err:
+            logger.error("Gemini API key is invalid.")
         else:
-            logger.error(f"  [FAIL] Gemini test failed: {e}")
+            logger.error(f"Gemini connection failed: {type(e).__name__}")
+
         return False
+
+    finally:
+        if client is not None:
+            try:
+                client.close()
+            except Exception:
+                pass
+
 
 
 # ──────────────────────────────────────────────

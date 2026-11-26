@@ -34,3 +34,24 @@ data/
 frontend_backup*/
 .pytest_cache/
 .coverage
+
+# ASTRA private and generated files
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+*.bak
+*.log
+logs/
+models/
+data/
+screenshots/
+memory/*.json
+*.db
+*.db-wal
+*.db-shm
+.pytest_cache/
+.coverage
+ASTRA_SOURCE_CODE.txt

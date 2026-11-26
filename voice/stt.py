@@ -54,10 +54,16 @@ class STTManager:
         """
         try:
             with self._open_microphone() as source:
-                logger.info("STT: Calibrating for ambient noise...")
-                self.recognizer.adjust_for_ambient_noise(
-                    source, duration=settings.STT_AMBIENT_NOISE_DURATION
-                )
+                if settings.STT_DYNAMIC_ENERGY_THRESHOLD:
+                    logger.info("STT: Calibrating for ambient noise...")
+                    self.recognizer.adjust_for_ambient_noise(
+                        source, duration=settings.STT_AMBIENT_NOISE_DURATION
+                    )
+                else:
+                    self.recognizer.energy_threshold = settings.STT_ENERGY_THRESHOLD
+                    logger.info(
+                        f"STT: Using fixed energy threshold {self.recognizer.energy_threshold}"
+                    )
                 logger.info("STT: Listening...")
 
                 audio = self.recognizer.listen(

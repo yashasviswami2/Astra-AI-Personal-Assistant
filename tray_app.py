@@ -366,6 +366,15 @@ class ASTRATrayApp:
                 logger.error(f"Shutdown command failed: {e}")
                 return "I couldn't shut down the computer."
 
+        # ASTRA local command integration
+        from core.local_commands import execute_local_command
+
+        local_response = execute_local_command(text)
+
+        if local_response is not None:
+            logger.info("Command handled locally without Gemini.")
+            return local_response
+
         if self.agent:
             return self.agent.execute_query(text)
 

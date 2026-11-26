@@ -1,3 +1,7 @@
+from security.confirmation import request_user_confirmation
+from security.permissions import requires_confirmation
+from utils.tool_response import normalize_tool_response
+import json
 from google import genai
 from google.genai import types
 from config import settings
@@ -200,7 +204,16 @@ class ASTRAAgent:
                 "modifying files in safe mode, verify that the "
                 "tool will request user confirmation.\n"
 
-                "Never claim a task was completed if the tool failed.\n"
+
+                                "Never claim a task was completed if the tool failed.\n"
+
+                "\nTOOL RESULT RULES:\n"
+                "Check the status and message of every tool response. "
+                "Never interpret an error response as successful execution. "
+                "An unverified response requires interpretation of its message. "
+                "Do not claim success when the outcome is uncertain. "
+                "Clearly distinguish successful, failed and incomplete actions. "
+                "Do not automatically retry actions that may have side effects. "
 
                 # COMMUNICATION STYLE
 
@@ -210,47 +223,72 @@ class ASTRAAgent:
                 "Your name is ASTRA. You are both a personal desktop "
                 "assistant and an academic productivity companion."
             ),
-            tools=list(AVAILABLE_TOOLS.values()),
+               tools=list(AVAILABLE_TOOLS.values()),
+
+            automatic_function_calling=(
+                types.AutomaticFunctionCallingConfig(
+                    disable=True
+                )
+            ),
         )
         
     def execute_query(self, query: str) -> str:
         """
-        Process user text input and return ASTRA's response.
+        Process user input using controlled Gemini function
+        calling and persistent conversation memory.
         """
+
+        if not isinstance(query, str) or not query.strip():
+            return "Please enter a valid message."
+
+        query = query.strip()
 
         if not self.api_configured:
             self._configure_api()
 
             if not self.api_configured:
                 return (
-                    "Gemini API key is not set. "
+                    "Gemini API key is not configured. "
                     "Please configure GEMINI_API_KEY."
                 )
 
-        logger.info(f"Agent executing query: '{query}'")
+        logger.info("ASTRA received a new query.")
+
+        executed_calls = {}
+        tool_errors = 0
+        tool_count = 0
+
+        max_loops = 8
+        max_tool_calls = 20
 
         try:
-            # Get previous conversation history.
+
+            # Load previous conversation history.
             history = memory.get_history()
 
-            # Convert stored history into Gemini Content objects.
             contents = []
 
             for message in history:
+
                 role = message.get("role")
-                parts = message.get("parts", [])
+
+                if role not in ("user", "model"):
+                    continue
 
                 text_parts = []
 
-                for part in parts:
+                for part in message.get("parts", []):
+
                     text = part.get("text")
 
-                    if text:
+                    if isinstance(text, str) and text.strip():
+
                         text_parts.append(
                             types.Part.from_text(text=text)
                         )
 
-                if role and text_parts:
+                if text_parts:
+
                     contents.append(
                         types.Content(
                             role=role,
@@ -258,7 +296,7 @@ class ASTRAAgent:
                         )
                     )
 
-            # Add current user query.
+            # Add current user message.
             contents.append(
                 types.Content(
                     role="user",
@@ -268,141 +306,300 @@ class ASTRAAgent:
                 )
             )
 
+            # Keep conversation history separate from
+            # temporary tool calls and tool responses.
+            conversation_contents = list(contents)
+
             config = self._build_config()
 
-            # Ask Gemini.
             response = self.client.models.generate_content(
                 model=settings.GEMINI_MODEL,
                 contents=contents,
-                config=config,
+                config=config
             )
 
-            max_loops = 5
             loop_count = 0
+            limit_reached = False
 
-            while loop_count < max_loops:
+            while True:
 
                 function_calls = []
 
-                # Find function calls in Gemini response.
-                if response.candidates:
-                    candidate = response.candidates[0]
+                candidate_content = None
 
-                    if candidate.content:
-                        for part in candidate.content.parts:
+                if response.candidates:
+
+                    candidate_content = (
+                        response.candidates[0].content
+                    )
+
+                    if candidate_content:
+
+                        for part in candidate_content.parts or []:
+
                             if part.function_call:
+
                                 function_calls.append(
                                     part.function_call
                                 )
 
-                # No tool call → final answer.
+                # No more tools requested.
                 if not function_calls:
+                    break
+
+                # Prevent excessive execution loops.
+                if loop_count >= max_loops:
+
+                    limit_reached = True
+
+                    logger.warning(
+                        "ASTRA reached its tool loop limit."
+                    )
+
                     break
 
                 loop_count += 1
 
                 logger.info(
-                    f"Iteration {loop_count}: Gemini requested "
-                    f"{len(function_calls)} tool(s)"
+                    f"Tool iteration {loop_count}: "
+                    f"{len(function_calls)} requested."
                 )
 
-                # Preserve Gemini's response in conversation.
-                contents.append(
-                    response.candidates[0].content
-                )
+                contents.append(candidate_content)
 
                 function_response_parts = []
 
-                # Execute requested tools.
                 for call in function_calls:
 
                     tool_name = call.name
-                    args = dict(call.args)
 
-                    logger.info(
-                        f"Running tool '{tool_name}' "
-                        f"with args: {args}"
-                    )
+                    try:
 
-                    tool_func = AVAILABLE_TOOLS.get(tool_name)
+                        args = dict(call.args or {})
 
-                    if tool_func:
-
-                        try:
-                            result = tool_func(**args)
-
-                        except Exception as tool_error:
-                            result = (
-                                f"Error executing tool "
-                                f"{tool_name}: {tool_error}"
-                            )
-
-                    else:
-                        result = (
-                            f"Error: Tool '{tool_name}' "
-                            f"is not registered."
+                        signature = json.dumps(
+                            {
+                                "tool": tool_name,
+                                "args": args
+                            },
+                            sort_keys=True,
+                            default=str
                         )
 
-                    logger.info(
-                        f"Tool '{tool_name}' returned: {result}"
-                    )
+                        # Reuse identical results within
+                        # the current user request.
+                        if signature in executed_calls:
 
+                            result_payload = (
+                                executed_calls[signature]
+                            )
+
+                            logger.warning(
+                                f"Repeated tool call avoided: "
+                                f"{tool_name}"
+                            )
+
+                        elif tool_count >= max_tool_calls:
+
+                            limit_reached = True
+
+                            result_payload = {
+                                "status": "error",
+                                "result": (
+                                    "Tool execution limit reached."
+                                )
+                            }
+
+                        else:
+
+                            tool_func = AVAILABLE_TOOLS.get(
+                                tool_name
+                            )
+
+                            if not callable(tool_func):
+
+                                tool_errors += 1
+
+                                result_payload = {
+                                    "success": False,
+                                    "status": "error",
+                                    "message": (
+                                        f"Tool '{tool_name}' "
+                                        "is not registered."
+                                    )
+                                }
+
+                            elif requires_confirmation(tool_name):
+
+                                tool_errors += 1
+
+                                logger.warning(
+                                    f"Permission required for tool: {tool_name}"
+                                )
+
+                                result_payload = {
+                                    "success": False,
+                                    "status": "permission_required",
+                                    "message": (
+                                        f"The tool '{tool_name}' requires "
+                                        "user authorization before execution."
+                                    )
+                                }
+
+                            else:
+
+                                tool_count += 1
+
+                                logger.info(
+                                    f"Executing tool: {tool_name}"
+                                )
+
+                                try:
+
+                                    result = tool_func(**args)
+
+                                    result_payload = normalize_tool_response(
+                                        result
+                                    )
+
+                                    if result_payload.get("success") is False:
+                                        tool_errors += 1
+
+                                except Exception:
+
+                                    tool_errors += 1
+
+                                    logger.exception(
+                                        f"Tool failed: {tool_name}"
+                                    )
+
+                                    result_payload = {
+                                        "success": False,
+                                        "status": "error",
+                                        "message": (
+                                            f"Tool '{tool_name}' "
+                                            "could not be executed."
+                                        )
+                                    }
+
+                    except Exception:
+
+                        tool_errors += 1
+
+                        logger.exception(
+                            "Invalid tool arguments."
+                        )
+
+                        result_payload = {
+                            "status": "error",
+                            "result": "Invalid tool arguments."
+                        }
+
+                    # ASTRA EXECUTION AUDIT
+                    from security.execution_audit import audit_tool_result
+                    audit_tool_result(tool_name, result_payload)
                     function_response_parts.append(
                         types.Part.from_function_response(
                             name=tool_name,
-                            response={
-                                "result": str(result)
-                            },
-                            id=call.id,
+                            response=result_payload,
+                            id=call.id
                         )
                     )
 
-                # Send tool results back to Gemini.
+                # Return tool results to Gemini.
                 contents.append(
                     types.Content(
                         role="user",
-                        parts=function_response_parts,
+                        parts=function_response_parts
                     )
                 )
 
                 response = self.client.models.generate_content(
                     model=settings.GEMINI_MODEL,
                     contents=contents,
-                    config=config,
+                    config=config
                 )
 
-            # Get final text response.
-            final_text = response.text or ""
+            # Generate the final user-facing response.
+            final_text = (response.text or "").strip()
 
-            if not final_text:
-                final_text = (
-                    "I completed the task, but I don't "
-                    "have a spoken response."
+            if limit_reached:
+
+                warning = (
+                    "The execution limit was reached. "
+                    "Some requested actions may be incomplete."
+                )
+
+                if final_text:
+                    final_text += "\n\n" + warning
+                else:
+                    final_text = warning
+
+            elif not final_text:
+
+                if tool_errors:
+
+                    final_text = (
+                        "Some tools encountered errors. "
+                        "I could not confirm task completion."
+                    )
+
+                elif tool_count:
+
+                    final_text = (
+                        "Tool execution finished, but I could "
+                        "not generate a final response. "
+                        "Please verify the requested actions."
+                    )
+
+                else:
+
+                    final_text = (
+                        "I could not generate a response. "
+                        "Please try again."
+                    )
+
+            # Preserve only the user-facing conversation.
+            conversation_contents.append(
+                types.Content(
+                    role="model",
+                    parts=[
+                        types.Part.from_text(
+                            text=final_text
+                        )
+                    ]
+                )
+            )
+
+            try:
+
+                memory.save_from_chat_history(
+                    conversation_contents
+                )
+
+            except Exception:
+
+                logger.exception(
+                    "Could not save conversation memory."
                 )
 
             logger.info(
-                f"Agent finished processing. "
-                f"Final response: '{final_text}'"
+                f"ASTRA finished. "
+                f"Tools executed: {tool_count}, "
+                f"Tool errors: {tool_errors}"
             )
-
-            # Save conversation.
-            try:
-                memory.save_from_chat_history(contents)
-            except Exception as memory_error:
-                logger.warning(
-                    f"Could not save conversation memory: "
-                    f"{memory_error}"
-                )
 
             return final_text
 
-        except Exception as e:
+        except Exception:
 
-            logger.error(
-                f"Agent execution failure: {e}",
-                exc_info=True
+            logger.exception(
+                "ASTRA agent execution failed."
             )
 
             return (
-                f"I had trouble processing that request: {str(e)}"
+                "I encountered an error while processing "
+                "your request. Some actions may already "
+                "have been performed. Please check before "
+                "retrying."
             )

@@ -725,9 +725,118 @@ def api_analyze_screen():
 
     result = analyze_screen(question)
 
+    if not isinstance(result, dict):
+        return jsonify({
+            "error": "Unexpected vision response."
+        }), 500
+
+    if not result.get("success"):
+        code = result.get("error_code", "VISION_ERROR")
+
+        status = {
+            "PERMISSION_DENIED": 403,
+            "INVALID_QUESTION": 400,
+            "API_KEY_MISSING": 503,
+            "IMAGE_TOO_LARGE": 413
+        }.get(code, 500)
+
+        return jsonify({
+            "success": False,
+            "error": result.get("message", "Screen analysis failed."),
+            "error_code": code
+        }), status
+
     return jsonify({
-        "response": result
+        "success": True,
+        "response": result["data"]["analysis"]
     })
+
+
+
+# ASTRA FLASK SECURITY
+
+app.config["MAX_CONTENT_LENGTH"] = 21 * 1024 * 1024
+
+ASTRA_ALLOWED_HOSTS = {
+    "127.0.0.1:5000",
+    "localhost:5000"
+}
+
+ASTRA_ALLOWED_ORIGINS = {
+    "http://127.0.0.1:5000",
+    "http://localhost:5000"
+}
+
+
+@app.before_request
+def enforce_astra_security():
+
+    if request.remote_addr not in {"127.0.0.1", "::1"}:
+        return jsonify({
+            "error": "Remote access is not permitted."
+        }), 403
+
+    if request.host not in ASTRA_ALLOWED_HOSTS:
+        return jsonify({
+            "error": "Invalid request host."
+        }), 403
+
+    if request.path.startswith("/api/"):
+
+        origin = request.headers.get("Origin")
+
+        if origin and origin not in ASTRA_ALLOWED_ORIGINS:
+            return jsonify({
+                "error": "Cross-origin access denied."
+            }), 403
+
+        if request.headers.get("Sec-Fetch-Site") == "cross-site":
+            return jsonify({
+                "error": "Cross-site request denied."
+            }), 403
+
+        if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
+
+            if origin and origin != request.host_url.rstrip("/"):
+                return jsonify({
+                    "error": "Request origin mismatch."
+                }), 403
+
+            if request.mimetype in {
+                "application/x-www-form-urlencoded",
+                "text/plain"
+            }:
+                return jsonify({
+                    "error": "Unsupported request format."
+                }), 415
+
+            if request.mimetype == "multipart/form-data":
+                if request.path != "/api/student/pdf" or not origin:
+                    return jsonify({
+                        "error": "Unauthorized multipart request."
+                    }), 403
+
+
+@app.after_request
+def apply_astra_security_headers(response):
+
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+
+    if request.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-store"
+
+    return response
+
+
+@app.errorhandler(413)
+def astra_request_too_large(error):
+    return jsonify({
+        "error": "Request exceeds the permitted size."
+    }), 413
+
 
 if __name__ == "__main__":
 

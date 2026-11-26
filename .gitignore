@@ -26,3 +26,11 @@ data/
 *.db
 *.db-wal
 *.db-shm
+
+# ASTRA Release Protection
+.env.*
+!.env.example
+*.bak
+frontend_backup*/
+.pytest_cache/
+.coverage
